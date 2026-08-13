@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/animations/Reveal";
+import { ContactForm } from "@/components/contact/ContactForm";
 import { Container } from "@/components/ui/Container";
 
 const contactItems = [
@@ -9,8 +10,6 @@ const contactItems = [
     value: "Al Muzahimiyah - OMDB 4216 - Al Hada - 19651",
   },
 ];
-
-const fields = ["Name", "Email", "Phone", "Subject"];
 
 export default function ContactPage() {
   return (
@@ -52,34 +51,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <form className="rounded-xl border border-dark/12 bg-white/45 p-6 sm:p-8">
-            <div className="grid gap-5 sm:grid-cols-2">
-              {fields.map((field) => (
-                <label key={field} className="grid gap-2 text-sm font-semibold text-dark">
-                  {field}
-                  <input
-                    type={field === "Email" ? "email" : "text"}
-                    className="h-12 border-0 border-b border-dark/18 bg-transparent px-0 font-normal text-text outline-none transition placeholder:text-muted/60 focus:border-accent"
-                    placeholder={field}
-                  />
-                </label>
-              ))}
-            </div>
-            <label className="mt-5 grid gap-2 text-sm font-semibold text-dark">
-              Message
-              <textarea
-                rows={6}
-                className="resize-none border-0 border-b border-dark/18 bg-transparent px-0 py-3 font-normal text-text outline-none transition placeholder:text-muted/60 focus:border-accent"
-                placeholder="Message"
-              />
-            </label>
-            <button
-              type="button"
-              className="mt-6 inline-flex rounded-xl bg-dark px-6 py-3 text-sm font-semibold text-white transition hover:bg-accent hover:text-dark"
-            >
-              Submit
-            </button>
-          </form>
+          <ContactForm />
         </Container>
       </section>
     </>

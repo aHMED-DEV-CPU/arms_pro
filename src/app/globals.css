@@ -3,12 +3,18 @@
 :root {
   --background: #f7f6f2;
   --secondary: #eeece6;
-  --dark: #202321;
+  --dark: #20282b;
   --text: #252725;
   --muted-text: #6b6d68;
   --accent: #b89a68;
   --soft-accent: #d4c19f;
   --white: #ffffff;
+  --steel-charcoal: #20282b;
+  --deep-steel: #2d373b;
+  --steel-gray: #59666b;
+  --muted-metal: #879297;
+  --light-steel: #c8ced0;
+  --steel-mist: #e3e6e5;
 }
 
 @theme inline {
@@ -20,6 +26,12 @@
   --color-accent: var(--accent);
   --color-soft-accent: var(--soft-accent);
   --color-white: var(--white);
+  --color-steel-charcoal: var(--steel-charcoal);
+  --color-deep-steel: var(--deep-steel);
+  --color-steel-gray: var(--steel-gray);
+  --color-muted-metal: var(--muted-metal);
+  --color-light-steel: var(--light-steel);
+  --color-steel-mist: var(--steel-mist);
   --font-sans: var(--font-manrope);
   --font-arabic: var(--font-ibm-plex-sans-arabic);
 }
@@ -37,16 +49,16 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+.home h1 {
+  color: #f1eee7;
+}
+
 h1,
 h2,
 h3,
 h4 {
   color: var(--dark);
   letter-spacing: -0.01em;
-}
-
-.home h1 {
-  color: #b59f89;
 }
 
 a {

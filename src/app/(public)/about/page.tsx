@@ -22,22 +22,20 @@ export default function AboutPage() {
           <Reveal delay={0.08}>
             <div className="space-y-6 text-lg leading-8 text-muted">
               <p>
-                ARMS PRO is a Saudi group providing integrated construction,
-                engineering, interior design, finishing, structural, and
-                architectural solutions for commercial, residential,
-                hospitality, and specialized projects.
+                ARMS PRO brings together structural engineering, architectural
+                design, construction, finishing, and specialized facade
+                solutions to deliver projects through a coordinated and
+                practical approach.
               </p>
               <p>
-                Our capabilities span general contracting, steel structures,
-                Light Gauge Steel systems, interior and exterior design,
-                high-end fit-outs, custom furniture, kitchens and wardrobes,
-                portable units, and architectural facade solutions.
+                Our work is especially focused on steel and Light Gauge Steel
+                systems, Foam Stone architectural facades, and architectural
+                design for interior and exterior spaces.
               </p>
               <p>
-                By bringing these disciplines together, we are able to support
-                projects from early concept and planning through construction,
-                finishing, and final execution, while maintaining a consistent
-                focus on quality, practical solutions, and attention to detail.
+                This integrated model allows the group to support projects from
+                early concept development through execution, finishing, and final
+                detailing.
               </p>
             </div>
           </Reveal>
@@ -57,7 +55,50 @@ export default function AboutPage() {
             />
           </div>
 
-          <div className="mt-12 grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+          <div className="mt-12 grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
+                Capabilities
+              </p>
+              <h2 className="mt-4 text-4xl font-semibold leading-tight text-dark">
+                Structural, Facade and Design Strength
+              </h2>
+            </div>
+            <div className="grid gap-8">
+              {[
+                {
+                  title: "Steel & Light Gauge Steel Systems",
+                  body: "A key part of our capabilities is the design and execution of steel and Light Gauge Steel systems for modern residential, commercial, and specialized structures. These systems support efficient construction, structural flexibility, precise execution, and adaptable architectural solutions.",
+                },
+                {
+                  title: "Foam Stone & Architectural Facades",
+                  body: "Our facade capabilities include lightweight Foam Stone architectural systems designed to provide refined exterior detailing with reduced structural weight and practical installation. These solutions support a wide range of architectural styles while contributing to insulation performance and design flexibility.",
+                },
+                {
+                  title: "Architectural & Interior Design",
+                  body: "Our design work connects architecture with functionality. From exterior concepts and modern villa architecture to interior planning and detailed finishing, our objective is to create spaces that reflect the project identity while remaining practical to execute.",
+                },
+                {
+                  title: "Integrated Project Delivery",
+                  body: "By combining structural systems, architectural design, construction, finishing, and facade solutions within one group, ARMS PRO can support projects from concept development through execution and final detailing.",
+                },
+              ].map((section, index) => (
+                <Reveal key={section.title} delay={index * 0.05}>
+                  <article className="border-l-2 border-accent pl-5">
+                    <p className="text-xs font-semibold tracking-[0.24em] text-accent">
+                      {String(index + 1).padStart(2, "0")}
+                    </p>
+                    <h3 className="mt-3 text-2xl font-semibold text-dark">
+                      {section.title}
+                    </h3>
+                    <p className="mt-3 leading-7 text-muted">{section.body}</p>
+                  </article>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-16 grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
                 Values

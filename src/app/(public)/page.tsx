@@ -36,20 +36,23 @@ export default async function Home() {
     })),
   );
 
+  const heroImage = (await getPublicImageFiles("images", "home", "hero")).at(0);
   const partnerLogos = await getPublicImageFiles("images", "partners");
 
   return (
     <>
       <section className="relative min-h-[82vh] overflow-hidden bg-dark home">
-        <Image
-          src="/images/home/hero/hero.webp"
-          alt="ARMS PRO architectural interior and construction work"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover opacity-65"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-dark/95 via-dark/70 to-dark/20" />
+        {heroImage ? (
+          <Image
+            src={heroImage.src}
+            alt="ARMS PRO Light Gauge Steel construction site"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[center_42%] sm:object-center"
+          />
+        ) : null}
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(32,40,43,0.86)_0%,rgba(45,55,59,0.68)_42%,rgba(32,40,43,0.24)_78%,rgba(32,40,43,0.12)_100%)]" />
         <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-dark/55 to-transparent" />
         <Container className="relative flex min-h-[82vh] items-end pb-16 pt-24 sm:pb-24">
           <div className="max-w-4xl text-white">
@@ -59,12 +62,12 @@ export default async function Home() {
               </p>
             </Reveal>
             <Reveal delay={0.08}>
-              <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[0.98] text-[#b59f89] sm:text-7xl lg:text-8xl">
+              <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[0.98] text-[#f1eee7] sm:text-7xl lg:text-8xl">
                 We Build Ideas Into Reality.
               </h1>
             </Reveal>
             <Reveal delay={0.16}>
-              <p className="mt-7 max-w-2xl text-lg leading-8 text-white/78 sm:text-xl">
+              <p className="mt-7 max-w-2xl text-lg leading-8 text-[#d8dcda] sm:text-xl">
                 Integrated construction, design, finishing, structural and
                 architectural solutions delivered with quality, creativity and
                 precision.
@@ -108,22 +111,14 @@ export default async function Home() {
                 <div className="space-y-6 text-lg leading-8 text-muted">
                   <p>
                     ARMS PRO is a Saudi group providing integrated construction,
-                    engineering, interior design, finishing, structural, and
-                    architectural solutions for commercial, residential,
-                    hospitality, and specialized projects.
+                    design, finishing, structural systems, and architectural
+                    solutions for residential, commercial, hospitality, and
+                    specialized projects.
                   </p>
                   <p>
-                    Our capabilities span general contracting, steel structures,
-                    Light Gauge Steel systems, interior and exterior design,
-                    high-end fit-outs, custom furniture, kitchens and wardrobes,
-                    portable units, and architectural facade solutions.
-                  </p>
-                  <p>
-                    By bringing these disciplines together, we are able to
-                    support projects from early concept and planning through
-                    construction, finishing, and final execution, while
-                    maintaining a consistent focus on quality, practical
-                    solutions, and attention to detail.
+                    By coordinating engineering, construction, facade work, and
+                    interior/exterior design, we help projects move from concept
+                    to practical execution with quality and attention to detail.
                   </p>
                 </div>
               </Reveal>
@@ -148,13 +143,15 @@ export default async function Home() {
           <Reveal delay={0.12}>
             <div className="mt-12 grid gap-5 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
               <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-secondary">
-                <Image
-                  src="/images/home/hero/hero.webp"
-                  alt="ARMS PRO refined interior work"
-                  fill
-                  sizes="(min-width: 1024px) 58vw, 100vw"
-                  className="object-cover"
-                />
+                {heroImage ? (
+                  <Image
+                    src={heroImage.src}
+                    alt="ARMS PRO Light Gauge Steel construction work"
+                    fill
+                    sizes="(min-width: 1024px) 58vw, 100vw"
+                    className="object-cover"
+                  />
+                ) : null}
               </div>
               <div className="border-l border-accent pl-6 text-sm uppercase tracking-[0.18em] text-muted">
                 <p>

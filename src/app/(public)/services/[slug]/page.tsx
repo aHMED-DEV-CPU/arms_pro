@@ -2,18 +2,10 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Reveal } from "@/components/animations/Reveal";
 import { ImageGallery } from "@/components/gallery/ImageGallery";
+import { ServiceOverview } from "@/components/services/ServiceOverview";
 import { Container } from "@/components/ui/Container";
 import { getServiceBySlug, services } from "@/data/services";
 import { getPublicImageFiles, getPublicVideoFiles } from "@/lib/utils/media";
-
-const foamStoneFeatures = [
-  "Lightweight",
-  "Thermal Insulation",
-  "Sound Insulation",
-  "Water & Moisture Resistance",
-  "Design Flexibility",
-  "Fast Execution",
-];
 
 export function generateStaticParams() {
   return services.map((service) => ({ slug: service.slug }));
@@ -88,32 +80,8 @@ export default async function ServiceDetailPage({
       ) : null}
 
       <section className={video || coverImage ? "pb-16 sm:pb-20" : "py-16 sm:py-20"}>
-        <Container className="grid gap-10 lg:grid-cols-[0.75fr_1.25fr]">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-              Overview
-            </p>
-          </div>
-          <div>
-            <p className="max-w-3xl text-2xl leading-10 text-dark">
-              {service.fullDescription}
-            </p>
-            {service.slug === "foam-stone" ? (
-              <div className="mt-10 grid border-y border-dark/12 sm:grid-cols-2">
-                {foamStoneFeatures.map((feature, index) => (
-                  <div
-                    key={feature}
-                    className="border-dark/12 py-5 sm:border-r sm:px-5 sm:even:border-r-0"
-                  >
-                    <p className="text-xs font-semibold tracking-[0.22em] text-accent">
-                      {String(index + 1).padStart(2, "0")}
-                    </p>
-                    <p className="mt-2 font-semibold text-dark">{feature}</p>
-                  </div>
-                ))}
-              </div>
-            ) : null}
-          </div>
+        <Container>
+          <ServiceOverview service={service} />
         </Container>
       </section>
 
