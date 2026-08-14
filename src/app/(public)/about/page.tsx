@@ -46,8 +46,8 @@ export default function AboutPage() {
         <Container>
           <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-secondary">
             <Image
-              src="/images/home/hero/hero.webp"
-              alt="ARMS PRO interior and construction craftsmanship"
+              src="/images/home/hero/hero.jpeg"
+              alt="ARMS PRO Light Gauge Steel construction site"
               fill
               priority
               sizes="100vw"
