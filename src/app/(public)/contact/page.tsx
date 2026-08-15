@@ -2,16 +2,19 @@ import { Reveal } from "@/components/animations/Reveal";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { Container } from "@/components/ui/Container";
 
-const contactItems = [
-  { label: "Phone", value: "0551119136" },
-  { label: "Email", value: "INFO@SWAED.COM.SA" },
-  {
-    label: "National Address",
-    value: "Al Muzahimiyah - OMDB 4216 - Al Hada - 19651",
-  },
-];
+import { getCompanySettings } from "@/lib/data/company";
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const settings = await getCompanySettings();
+
+  const contactItems = [
+    { label: "Phone", value: settings?.phone || "0551119136" },
+    { label: "Email", value: settings?.email || "INFO@SWAED.COM.SA" },
+    {
+      label: "National Address",
+      value: settings?.address?.en || "Al Muzahimiyah - OMDB 4216 - Al Hada - 19651",
+    },
+  ];
   return (
     <>
       <section className="bg-secondary py-16 sm:py-24">

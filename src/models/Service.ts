@@ -26,6 +26,7 @@ const ServiceSchema = new Schema<IService>(
     video: { type: MediaSchema },
     featured: { type: Boolean, default: false },
     status: { type: String, enum: ["draft", "published"], default: "published" },
+    displayOrder: { type: Number, required: true, default: 0, min: 0 },
   },
   {
     timestamps: true,

@@ -2,9 +2,13 @@ import Image from "next/image";
 import { Reveal } from "@/components/animations/Reveal";
 import { Container } from "@/components/ui/Container";
 
+import { getCompanySettings } from "@/lib/data/company";
+
 const values = ["Excellence", "Innovation", "Integrity", "Quality"];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const settings = await getCompanySettings();
+
   return (
     <>
       <section className="bg-secondary py-16 sm:py-24">
@@ -22,10 +26,11 @@ export default function AboutPage() {
           <Reveal delay={0.08}>
             <div className="space-y-6 text-lg leading-8 text-muted">
               <p>
-                ARMS PRO brings together structural engineering, architectural
-                design, construction, finishing, and specialized facade
-                solutions to deliver projects through a coordinated and
-                practical approach.
+                {settings?.about?.en ||
+                  `ARMS PRO brings together structural engineering, architectural
+                  design, construction, finishing, and specialized facade
+                  solutions to deliver projects through a coordinated and
+                  practical approach.`}
               </p>
               <p>
                 Our work is especially focused on steel and Light Gauge Steel

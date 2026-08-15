@@ -1,17 +1,10 @@
 import { Reveal } from "@/components/animations/Reveal";
 import { ServiceCard } from "@/components/services/ServiceCard";
 import { Container } from "@/components/ui/Container";
-import { services } from "@/data/services";
-import { getPublicImageFiles } from "@/lib/utils/media";
+import { getServices } from "@/lib/data/services";
 
 export default async function ServicesPage() {
-  const serviceCards = await Promise.all(
-    services.map(async (service) => ({
-      service,
-      image: (await getPublicImageFiles("images", "services", service.imageFolder))
-        .at(0)?.src,
-    })),
-  );
+  const dbServices = await getServices();
 
   return (
     <>
@@ -35,9 +28,9 @@ export default async function ServicesPage() {
       <section className="py-16 sm:py-24">
         <Container>
           <div className="grid gap-x-10 gap-y-12 md:grid-cols-2">
-            {serviceCards.map(({ service, image }, index) => (
+            {dbServices.map((service, index) => (
               <Reveal key={service.slug} className="h-full" delay={(index % 2) * 0.08}>
-                <ServiceCard service={service} image={image} index={index} />
+                <ServiceCard service={service} image={service.coverImage?.url} index={index} />
               </Reveal>
             ))}
           </div>

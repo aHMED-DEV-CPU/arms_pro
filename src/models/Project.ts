@@ -18,6 +18,7 @@ const ProjectSchema = new Schema<IProject>(
       enum: ["completed", "in-progress", "upcoming", "on-hold"],
       default: "completed",
     },
+    displayOrder: { type: Number, required: true, default: 0, min: 0 },
   },
   {
     timestamps: true,

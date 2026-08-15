@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import type { Service } from "@/data/services";
+import type { IService } from "@/types";
 
 type ServiceOverviewProps = {
-  service: Service;
+  service: IService;
 };
 
 export function ServiceOverview({ service }: ServiceOverviewProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const overview = service.overview ?? service.fullDescription;
+  const overview = service.overview.en;
   const hasDetails =
     Boolean(service.details?.length) ||
     Boolean(service.capabilities?.length) ||
@@ -49,7 +49,7 @@ export function ServiceOverview({ service }: ServiceOverviewProps) {
                   {service.details?.length ? (
                     <div className="max-w-3xl space-y-5 text-lg leading-8 text-muted">
                       {service.details.map((paragraph) => (
-                        <p key={paragraph}>{paragraph}</p>
+                        <p key={paragraph.en}>{paragraph.en}</p>
                       ))}
                     </div>
                   ) : null}
@@ -59,15 +59,15 @@ export function ServiceOverview({ service }: ServiceOverviewProps) {
                       {service.capabilities?.length ? (
                         <div>
                           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-                            {service.capabilitiesTitle ?? "What We Provide"}
+                            {service.capabilitiesTitle?.en ?? "What We Provide"}
                           </p>
                           <ul className="mt-5 grid gap-3 border-y border-dark/12 py-5">
                             {service.capabilities.map((item) => (
                               <li
-                                key={item}
+                                key={item.en}
                                 className="border-b border-dark/10 pb-3 text-sm font-medium leading-6 text-dark last:border-b-0 last:pb-0"
                               >
-                                {item}
+                                {item.en}
                               </li>
                             ))}
                           </ul>
@@ -77,16 +77,16 @@ export function ServiceOverview({ service }: ServiceOverviewProps) {
                       {service.benefits?.length ? (
                         <div>
                           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-                            {service.benefitsTitle ?? "Key Advantages"}
+                            {service.benefitsTitle?.en ?? "Key Advantages"}
                           </p>
                           <div className="mt-5 space-y-5 border-y border-dark/12 py-5">
                             {service.benefits.map((benefit) => (
-                              <div key={benefit.title}>
+                              <div key={benefit.title.en}>
                                 <h3 className="text-lg font-semibold text-dark">
-                                  {benefit.title}
+                                  {benefit.title.en}
                                 </h3>
                                 <p className="mt-2 text-sm leading-6 text-muted">
-                                  {benefit.text}
+                                  {benefit.text.en}
                                 </p>
                               </div>
                             ))}

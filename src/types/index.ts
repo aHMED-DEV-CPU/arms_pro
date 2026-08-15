@@ -26,6 +26,7 @@ export interface IService {
   video?: Media;
   featured: boolean;
   status: "draft" | "published";
+  displayOrder: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -41,6 +42,7 @@ export interface IProject {
   video?: Media;
   featured: boolean;
   status: "completed" | "in-progress" | "upcoming" | "on-hold";
+  displayOrder: number;
   createdAt?: Date;
   updatedAt?: Date;
 }

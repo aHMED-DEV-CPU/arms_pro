@@ -27,6 +27,7 @@ export const serviceValidationSchema = z.object({
   video: mediaSchema.optional(),
   featured: z.boolean().default(false),
   status: z.enum(["draft", "published"]).default("published"),
+  displayOrder: z.number().int().min(0).default(0),
 });
 
 export type ServiceValidationValues = z.infer<typeof serviceValidationSchema>;

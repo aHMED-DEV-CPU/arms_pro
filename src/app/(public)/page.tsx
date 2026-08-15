@@ -5,39 +5,25 @@ import { PartnersSlider } from "@/components/home/PartnersSlider";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { ServiceCard } from "@/components/services/ServiceCard";
 import { Container } from "@/components/ui/Container";
-import { featuredProjectSlugs, projects } from "@/data/projects";
-import { featuredServiceSlugs, services } from "@/data/services";
+import { getFeaturedServices } from "@/lib/data/services";
+import { getFeaturedProjects } from "@/lib/data/projects";
+import { getPartners } from "@/lib/data/partners";
+import { getCompanySettings } from "@/lib/data/company";
 import { getPublicImageFiles } from "@/lib/utils/media";
 
 const values = ["Excellence", "Innovation", "Integrity", "Quality"];
 
 export default async function Home() {
-  const featuredServices = services.filter((service) =>
-    featuredServiceSlugs.includes(service.slug),
-  );
-  const featuredProjects = projects.filter((project) =>
-    featuredProjectSlugs.includes(project.slug),
-  );
-
-  const serviceCards = await Promise.all(
-    featuredServices.map(async (service) => ({
-      service,
-      image: (await getPublicImageFiles("images", "services", service.imageFolder))
-        .at(0)?.src,
-    })),
-  );
-
-  const projectCards = await Promise.all(
-    featuredProjects.map(async (project) => ({
-      project,
-      image: (await getPublicImageFiles("images", "projects", project.folder)).at(
-        0,
-      )?.src,
-    })),
-  );
+  const dbServices = await getFeaturedServices();
+  const dbProjects = await getFeaturedProjects();
+  const dbPartners = await getPartners();
+  const settings = await getCompanySettings();
 
   const heroImage = (await getPublicImageFiles("images", "home", "hero")).at(0);
-  const partnerLogos = await getPublicImageFiles("images", "partners");
+  const partnerLogos = dbPartners.map((p) => ({
+    name: p.name,
+    src: p.logo.url,
+  }));
 
   return (
     <>
@@ -110,10 +96,11 @@ export default async function Home() {
               <Reveal delay={0.08}>
                 <div className="space-y-6 text-lg leading-8 text-muted">
                   <p>
-                    ARMS PRO is a Saudi group providing integrated construction,
-                    design, finishing, structural systems, and architectural
-                    solutions for residential, commercial, hospitality, and
-                    specialized projects.
+                    {settings?.about?.en ||
+                      `ARMS PRO is a Saudi group providing integrated construction,
+                      design, finishing, structural systems, and architectural
+                      solutions for residential, commercial, hospitality, and
+                      specialized projects.`}
                   </p>
                   <p>
                     By coordinating engineering, construction, facade work, and
@@ -188,9 +175,9 @@ export default async function Home() {
           </div>
 
           <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {serviceCards.map(({ service, image }, index) => (
+            {dbServices.map((service, index) => (
               <Reveal key={service.slug} className="h-full" delay={index * 0.06}>
-                <ServiceCard service={service} image={image} index={index} />
+                <ServiceCard service={service} image={service.coverImage?.url} index={index} />
               </Reveal>
             ))}
           </div>
@@ -222,11 +209,11 @@ export default async function Home() {
           </div>
 
           <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {projectCards.map(({ project, image }, index) => (
+            {dbProjects.map((project, index) => (
               <Reveal key={project.slug} className="h-full" delay={index * 0.06}>
                 <ProjectCard
                   project={project}
-                  image={image}
+                  image={project.coverImage?.url}
                   index={index}
                 />
               </Reveal>

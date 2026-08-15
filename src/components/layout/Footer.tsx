@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { getCompanySettings } from "@/lib/data/company";
 
 const quickLinks = [
   { href: "/", label: "Home" },
@@ -9,7 +10,16 @@ const quickLinks = [
   { href: "/contact", label: "Contact" },
 ];
 
-export function Footer() {
+export async function Footer() {
+  const settings = await getCompanySettings();
+
+  const phone = settings?.phone || "0551119136";
+  const email = settings?.email || "INFO@SWAED.COM.SA";
+  const cr = settings?.commercialRegistration || "1111103343";
+  const uen = settings?.unifiedEstablishmentNumber || "7039472662";
+  const vat = settings?.vatNumber || "312627669500003";
+  const address = settings?.address?.en || "Al Muzahimiyah – OMDB 4216 – Al Hada – 19651";
+
   return (
     <footer className="bg-dark py-12 text-sm text-white/62 sm:py-14">
       <Container>
@@ -55,8 +65,8 @@ export function Footer() {
               Contact
             </h2>
             <div className="mt-4 space-y-3">
-              <p>0551119136</p>
-              <p>INFO@SWAED.COM.SA</p>
+              <p>{phone}</p>
+              <p>{email}</p>
             </div>
           </div>
 
@@ -69,21 +79,21 @@ export function Footer() {
                 <dt className="font-medium text-white/82">
                   Commercial Registration
                 </dt>
-                <dd>1111103343</dd>
+                <dd>{cr}</dd>
               </div>
               <div>
                 <dt className="font-medium text-white/82">
                   Unified Establishment Number
                 </dt>
-                <dd>7039472662</dd>
+                <dd>{uen}</dd>
               </div>
               <div>
                 <dt className="font-medium text-white/82">VAT Number</dt>
-                <dd>312627669500003</dd>
+                <dd>{vat}</dd>
               </div>
               <div>
                 <dt className="font-medium text-white/82">National Address</dt>
-                <dd>Al Muzahimiyah &ndash; OMDB 4216 &ndash; Al Hada &ndash; 19651</dd>
+                <dd>{address}</dd>
               </div>
             </dl>
           </div>

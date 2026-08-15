@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Service } from "@/data/services";
+import type { IService } from "@/types";
 
 type ServiceCardProps = {
-  service: Service;
+  service: IService;
   image?: string;
   index?: number;
 };
@@ -19,11 +19,11 @@ export function ServiceCard({ service, image, index }: ServiceCardProps) {
         <Link
           href={href}
           className="relative block aspect-[4/3] overflow-hidden rounded-2xl bg-secondary"
-          aria-label={`View ${service.title}`}
+          aria-label={`View ${service.name.en}`}
         >
           <Image
             src={image}
-            alt={`${service.title} service`}
+            alt={`${service.name.en} service`}
             fill
             sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover transition duration-500 group-hover:scale-[1.03]"
@@ -38,9 +38,9 @@ export function ServiceCard({ service, image, index }: ServiceCardProps) {
           </p>
         ) : null}
         <h3 className="text-2xl font-semibold leading-tight text-dark transition group-hover:text-accent">
-          <Link href={href}>{service.title}</Link>
+          <Link href={href}>{service.name.en}</Link>
         </h3>
-        <p className="mt-4 leading-7 text-muted">{service.shortDescription}</p>
+        <p className="mt-4 leading-7 text-muted">{service.shortDescription.en}</p>
         <Link
           href={href}
           className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-accent transition hover:text-dark"
@@ -54,3 +54,4 @@ export function ServiceCard({ service, image, index }: ServiceCardProps) {
     </article>
   );
 }
+

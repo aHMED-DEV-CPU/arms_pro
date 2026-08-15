@@ -16,6 +16,7 @@ export const projectValidationSchema = z.object({
   video: mediaSchema.optional(),
   featured: z.boolean().default(false),
   status: z.enum(["completed", "in-progress", "upcoming", "on-hold"]).default("completed"),
+  displayOrder: z.number().int().min(0).default(0),
 });
 
 export type ProjectValidationValues = z.infer<typeof projectValidationSchema>;

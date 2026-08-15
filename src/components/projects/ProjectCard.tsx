@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Project } from "@/data/projects";
+import type { IProject } from "@/types";
 
 type ProjectCardProps = {
-  project: Project;
+  project: IProject;
   image?: string;
   index?: number;
   large?: boolean;
@@ -27,11 +27,11 @@ export function ProjectCard({
           className={`relative block overflow-hidden rounded-2xl bg-secondary ${
             large ? "aspect-[16/10]" : "aspect-[4/3]"
           }`}
-          aria-label={`View ${project.title}`}
+          aria-label={`View ${project.title.en}`}
         >
           <Image
             src={image}
-            alt={project.title}
+            alt={project.title.en}
             fill
             sizes="(min-width: 1024px) 58vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover transition duration-500 group-hover:scale-[1.03]"
@@ -40,9 +40,9 @@ export function ProjectCard({
       ) : null}
 
       <div className="flex flex-1 flex-col border-b border-dark/12 py-6">
-        {project.category ? (
+        {project.category?.en ? (
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-accent">
-            {project.category}
+            {project.category.en}
           </p>
         ) : null}
         {number ? (
@@ -51,7 +51,7 @@ export function ProjectCard({
           </p>
         ) : null}
         <h3 className="text-2xl font-semibold text-dark transition group-hover:text-accent">
-          <Link href={href}>{project.title}</Link>
+          <Link href={href}>{project.title.en}</Link>
         </h3>
         <Link
           href={href}
