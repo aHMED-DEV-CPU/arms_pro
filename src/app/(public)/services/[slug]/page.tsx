@@ -5,6 +5,8 @@ import { ImageGallery } from "@/components/gallery/ImageGallery";
 import { ServiceOverview } from "@/components/services/ServiceOverview";
 import { Container } from "@/components/ui/Container";
 import { getServiceBySlug, getServices } from "@/lib/data/services";
+import { getLanguage } from "@/lib/i18n-server";
+import { t, getLocalizedValue } from "@/lib/i18n";
 
 export async function generateStaticParams() {
   const dbServices = await getServices();
@@ -16,6 +18,7 @@ export default async function ServiceDetailPage({
 }: PageProps<"/services/[slug]">) {
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
+  const lang = await getLanguage();
 
   if (!service || service.status === "draft") {
     notFound();
@@ -29,19 +32,22 @@ export default async function ServiceDetailPage({
   const video = service.video;
   const coverImage = service.coverImage;
 
+  const name = getLocalizedValue(service.name, lang);
+  const shortDescription = getLocalizedValue(service.shortDescription, lang);
+
   return (
     <>
       <section className="bg-secondary py-16 sm:py-24">
         <Container>
           <Reveal>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-              Service
+              {t("services", "serviceEyebrow", lang)}
             </p>
             <h1 className="mt-5 max-w-5xl text-5xl font-semibold leading-tight text-dark sm:text-7xl">
-              {service.name.en}
+              {name}
             </h1>
             <p className="mt-7 max-w-3xl text-xl leading-9 text-muted">
-              {service.shortDescription.en}
+              {shortDescription}
             </p>
           </Reveal>
         </Container>
@@ -56,13 +62,13 @@ export default async function ServiceDetailPage({
                 controls
                 className="aspect-video w-full rounded-2xl bg-dark object-cover"
               >
-                Your browser does not support the video tag.
+                {t("services", "noVideoSupport", lang)}
               </video>
             ) : coverImage?.url ? (
               <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-secondary">
                 <Image
                   src={coverImage.url}
-                  alt={`${service.name.en} cover`}
+                  alt={`${name} cover`}
                   fill
                   priority
                   sizes="100vw"
@@ -76,7 +82,7 @@ export default async function ServiceDetailPage({
 
       <section className={video?.url || coverImage?.url ? "pb-16 sm:pb-20" : "py-16 sm:py-20"}>
         <Container>
-          <ServiceOverview service={service} />
+          <ServiceOverview service={service} lang={lang} />
         </Container>
       </section>
 
@@ -86,14 +92,14 @@ export default async function ServiceDetailPage({
             <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-                  Gallery
+                  {t("services", "galleryEyebrow", lang)}
                 </p>
                 <h2 className="mt-4 text-4xl font-semibold text-dark">
-                  Service Gallery
+                  {t("services", "galleryTitle", lang)}
                 </h2>
               </div>
             </div>
-            <ImageGallery images={galleryImages} title={service.name.en} />
+            <ImageGallery images={galleryImages} title={name} lang={lang} />
           </Container>
         </section>
       ) : null}

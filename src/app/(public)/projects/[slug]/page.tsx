@@ -4,6 +4,8 @@ import { Reveal } from "@/components/animations/Reveal";
 import { ImageGallery } from "@/components/gallery/ImageGallery";
 import { Container } from "@/components/ui/Container";
 import { getProjectBySlug, getProjects } from "@/lib/data/projects";
+import { getLanguage } from "@/lib/i18n-server";
+import { t, getLocalizedValue } from "@/lib/i18n";
 
 export async function generateStaticParams() {
   const dbProjects = await getProjects();
@@ -15,6 +17,7 @@ export default async function ProjectDetailPage({
 }: PageProps<"/projects/[slug]">) {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
+  const lang = await getLanguage();
 
   if (!project) {
     notFound();
@@ -28,16 +31,18 @@ export default async function ProjectDetailPage({
   const video = project.video;
   const coverImage = project.coverImage;
 
+  const title = getLocalizedValue(project.title, lang);
+
   return (
     <>
       <section className="bg-secondary py-16 sm:py-24">
         <Container>
           <Reveal>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-              Project
+              {t("projects", "projectEyebrow", lang)}
             </p>
             <h1 className="mt-5 max-w-5xl text-5xl font-semibold leading-tight text-dark sm:text-7xl">
-              {project.title.en}
+              {title}
             </h1>
           </Reveal>
         </Container>
@@ -52,13 +57,13 @@ export default async function ProjectDetailPage({
                 controls
                 className="aspect-video w-full rounded-2xl bg-dark object-cover"
               >
-                Your browser does not support the video tag.
+                {t("services", "noVideoSupport", lang)}
               </video>
             ) : coverImage?.url ? (
               <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-secondary">
                 <Image
                   src={coverImage.url}
-                  alt={`${project.title.en} cover`}
+                  alt={`${title} cover`}
                   fill
                   priority
                   sizes="100vw"
@@ -74,13 +79,13 @@ export default async function ProjectDetailPage({
         <Container>
           <div className="mb-8">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-              Gallery
+              {t("projects", "galleryEyebrow", lang)}
             </p>
             <h2 className="mt-4 text-4xl font-semibold text-dark">
-              Project Gallery
+              {t("projects", "galleryTitle", lang)}
             </h2>
           </div>
-          <ImageGallery images={galleryImages} title={project.title.en} />
+          <ImageGallery images={galleryImages} title={title} lang={lang} />
         </Container>
       </section>
     </>

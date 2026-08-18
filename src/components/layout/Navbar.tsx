@@ -5,20 +5,23 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Container } from "@/components/ui/Container";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { t, TranslationLang } from "@/lib/i18n";
 
 const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/services", label: "Services" },
-  { href: "/projects", label: "Projects" },
+  { href: "/", labelKey: "home" as const },
+  { href: "/about", labelKey: "about" as const },
+  { href: "/services", labelKey: "services" as const },
+  { href: "/projects", labelKey: "projects" as const },
 ];
 
 interface NavbarProps {
   logoUrl?: string;
   companyName?: string;
+  lang?: TranslationLang;
 }
 
-export function Navbar({ logoUrl, companyName = "ARMS PRO" }: NavbarProps) {
+export function Navbar({ logoUrl, companyName = "ARMS PRO", lang = "en" }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
@@ -26,7 +29,6 @@ export function Navbar({ logoUrl, companyName = "ARMS PRO" }: NavbarProps) {
     if (href === "/") {
       return pathname === "/";
     }
-
     return pathname === href || pathname.startsWith(`${href}/`);
   }
 
@@ -36,7 +38,7 @@ export function Navbar({ logoUrl, companyName = "ARMS PRO" }: NavbarProps) {
         <Link
           href="/"
           className="relative h-14 w-40 shrink-0 flex items-center overflow-hidden sm:h-16 sm:w-48"
-          aria-label={`${companyName} home`}
+          aria-label={t("nav", "ariaHome", lang)}
           onClick={() => setIsOpen(false)}
         >
           {logoUrl ? (
@@ -64,13 +66,15 @@ export function Navbar({ logoUrl, companyName = "ARMS PRO" }: NavbarProps) {
                 key={link.href}
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={`relative py-2 transition-colors duration-200 hover:text-white ${active ? "text-soft-accent" : "text-white/76"
-                  }`}
+                className={`relative py-2 transition-colors duration-200 hover:text-white ${
+                  active ? "text-soft-accent" : "text-white/76"
+                }`}
               >
-                {link.label}
+                {t("nav", link.labelKey, lang)}
                 <span
-                  className={`absolute inset-x-0 -bottom-0.5 h-px origin-left bg-accent transition-transform duration-200 ${active ? "scale-x-100" : "scale-x-0"
-                    }`}
+                  className={`absolute inset-x-0 -bottom-0.5 h-px origin-left bg-accent transition-transform duration-200 ${
+                    active ? "scale-x-100" : "scale-x-0"
+                  }`}
                   aria-hidden="true"
                 />
               </Link>
@@ -78,42 +82,51 @@ export function Navbar({ logoUrl, companyName = "ARMS PRO" }: NavbarProps) {
           })}
         </nav>
 
-        <Link
-          href="/contact"
-          className="hidden rounded-xl border border-accent bg-accent px-5 py-2.5 text-sm font-semibold text-dark transition hover:bg-soft-accent md:inline-flex"
-        >
-          Get In Touch
-        </Link>
+        <div className="hidden items-center gap-6 md:flex">
+          <LanguageSwitcher currentLang={lang} />
+          <Link
+            href="/contact"
+            className="rounded-xl border border-accent bg-accent px-5 py-2.5 text-sm font-semibold text-dark transition hover:bg-soft-accent"
+          >
+            {t("nav", "getInTouch", lang)}
+          </Link>
+        </div>
 
-        <button
-          type="button"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-md border border-white/20 text-white transition md:hidden"
-          aria-label="Toggle navigation menu"
-          aria-expanded={isOpen}
-          aria-controls="mobile-navigation"
-          onClick={() => setIsOpen((open) => !open)}
-        >
-          <span className="sr-only">Menu</span>
-          <span className="flex w-5 flex-col gap-1.5" aria-hidden="true">
-            <span
-              className={`h-px bg-current transition ${isOpen ? "translate-y-2 rotate-45" : ""
+        <div className="flex items-center gap-4 md:hidden">
+          <LanguageSwitcher currentLang={lang} />
+          <button
+            type="button"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-md border border-white/20 text-white transition"
+            aria-label={t("nav", "ariaToggle", lang)}
+            aria-expanded={isOpen}
+            aria-controls="mobile-navigation"
+            onClick={() => setIsOpen((open) => !open)}
+          >
+            <span className="sr-only">Menu</span>
+            <span className="flex w-5 flex-col gap-1.5" aria-hidden="true">
+              <span
+                className={`h-px bg-current transition ${
+                  isOpen ? "translate-y-2 rotate-45" : ""
                 }`}
-            />
-            <span
-              className={`h-px bg-current transition ${isOpen ? "opacity-0" : ""}`}
-            />
-            <span
-              className={`h-px bg-current transition ${isOpen ? "-translate-y-2 -rotate-45" : ""
+              />
+              <span
+                className={`h-px bg-current transition ${isOpen ? "opacity-0" : ""}`}
+              />
+              <span
+                className={`h-px bg-current transition ${
+                  isOpen ? "-translate-y-2 -rotate-45" : ""
                 }`}
-            />
-          </span>
-        </button>
+              />
+            </span>
+          </button>
+        </div>
       </Container>
 
       <div
         id="mobile-navigation"
-        className={`overflow-hidden border-t border-white/10 bg-dark transition-all duration-300 md:hidden ${isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-          }`}
+        className={`overflow-hidden border-t border-white/10 bg-dark transition-all duration-300 md:hidden ${
+          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
       >
         <Container className="flex flex-col gap-1 py-4">
           {navLinks.map((link) => {
@@ -124,11 +137,12 @@ export function Navbar({ logoUrl, companyName = "ARMS PRO" }: NavbarProps) {
                 key={link.href}
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={`border-b border-white/10 py-3 text-base font-medium transition-colors duration-200 hover:text-white ${active ? "text-soft-accent" : "text-white/82"
-                  }`}
+                className={`border-b border-white/10 py-3 text-base font-medium transition-colors duration-200 hover:text-white ${
+                  active ? "text-soft-accent" : "text-white/82"
+                }`}
                 onClick={() => setIsOpen(false)}
               >
-                {link.label}
+                {t("nav", link.labelKey, lang)}
               </Link>
             );
           })}
@@ -137,7 +151,7 @@ export function Navbar({ logoUrl, companyName = "ARMS PRO" }: NavbarProps) {
             className="mt-3 inline-flex justify-center rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-dark"
             onClick={() => setIsOpen(false)}
           >
-            Get In Touch
+            {t("nav", "getInTouch", lang)}
           </Link>
         </Container>
       </div>

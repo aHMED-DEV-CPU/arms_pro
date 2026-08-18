@@ -3,13 +3,42 @@ import { Reveal } from "@/components/animations/Reveal";
 import { Container } from "@/components/ui/Container";
 import { getCompanySettings } from "@/lib/data/company";
 import { SocialLinks } from "@/components/layout/SocialLinks";
-
-const values = ["Excellence", "Innovation", "Integrity", "Quality"];
+import { getLanguage } from "@/lib/i18n-server";
+import { t, getLocalizedValue } from "@/lib/i18n";
 
 export default async function AboutPage() {
   const settings = await getCompanySettings();
-  const companyName = settings?.companyName?.en || "ARMS PRO";
+  const lang = await getLanguage();
+
+  const companyName = getLocalizedValue(settings?.companyName, lang) || "ARMS PRO";
   const aboutParagraphs = settings?.aboutParagraphs || [];
+
+  const values = [
+    { title: t("about", "excellence", lang) },
+    { title: t("about", "innovation", lang) },
+    { title: t("about", "integrity", lang) },
+    { title: t("about", "quality", lang) },
+  ];
+
+  const capabilities = [
+    {
+      title: t("about", "cap1Title", lang),
+      body: t("about", "cap1Body", lang),
+    },
+    {
+      title: t("about", "cap2Title", lang),
+      body: t("about", "cap2Body", lang),
+    },
+    {
+      title: t("about", "cap3Title", lang),
+      body: t("about", "cap3Body", lang),
+    },
+    {
+      title: t("about", "cap4Title", lang),
+      body: t("about", "cap4Body", lang),
+    },
+  ];
+
   return (
     <>
       <section className="bg-secondary py-16 sm:py-24">
@@ -17,17 +46,17 @@ export default async function AboutPage() {
           <div>
             <Reveal>
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-                About {companyName}
+                {t("about", "aboutEyebrow", lang)} {companyName}
               </p>
               <h1 className="mt-5 text-5xl font-semibold leading-tight text-dark sm:text-7xl">
-                Building More Than Structures
+                {t("about", "aboutTitle", lang)}
               </h1>
             </Reveal>
           </div>
           <Reveal delay={0.08}>
             <div className="space-y-6 text-lg leading-8 text-muted">
               {aboutParagraphs.map((para, idx) => (
-                <p key={idx}>{para.en}</p>
+                <p key={idx}>{getLocalizedValue(para, lang)}</p>
               ))}
             </div>
           </Reveal>
@@ -40,7 +69,7 @@ export default async function AboutPage() {
             {settings?.aboutImage?.url ? (
               <Image
                 src={settings.aboutImage.url}
-                alt={`${companyName} Light Gauge Steel construction site`}
+                alt={`${companyName}`}
                 fill
                 priority
                 sizes="100vw"
@@ -48,7 +77,7 @@ export default async function AboutPage() {
               />
             ) : (
               <div className="absolute inset-0 bg-secondary flex items-center justify-center">
-                <span className="text-dark/40 text-xs">No About Image Available</span>
+                <span className="text-dark/40 text-xs">{t("about", "noAboutImage", lang)}</span>
               </div>
             )}
           </div>
@@ -56,33 +85,16 @@ export default async function AboutPage() {
           <div className="mt-12 grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-                Capabilities
+                {t("about", "capabilitiesTitle", lang)}
               </p>
               <h2 className="mt-4 text-4xl font-semibold leading-tight text-dark">
-                Structural, Facade and Design Strength
+                {t("about", "capabilitiesHeading", lang)}
               </h2>
             </div>
             <div className="grid gap-8">
-              {[
-                {
-                  title: "Steel & Light Gauge Steel Systems",
-                  body: "A key part of our capabilities is the design and execution of steel and Light Gauge Steel systems for modern residential, commercial, and specialized structures. These systems support efficient construction, structural flexibility, precise execution, and adaptable architectural solutions.",
-                },
-                {
-                  title: "Foam Stone & Architectural Facades",
-                  body: "Our facade capabilities include lightweight Foam Stone architectural systems designed to provide refined exterior detailing with reduced structural weight and practical installation. These solutions support a wide range of architectural styles while contributing to insulation performance and design flexibility.",
-                },
-                {
-                  title: "Architectural & Interior Design",
-                  body: "Our design work connects architecture with functionality. From exterior concepts and modern villa architecture to interior planning and detailed finishing, our objective is to create spaces that reflect the project identity while remaining practical to execute.",
-                },
-                {
-                  title: "Integrated Project Delivery",
-                  body: "By combining structural systems, architectural design, construction, finishing, and facade solutions within one group, ARMS PRO can support projects from concept development through execution and final detailing.",
-                },
-              ].map((section, index) => (
+              {capabilities.map((section, index) => (
                 <Reveal key={section.title} delay={index * 0.05}>
-                  <article className="border-l-2 border-accent pl-5">
+                  <article className="border-l-2 border-accent pl-5 rtl:border-l-0 rtl:border-r-2 rtl:pl-0 rtl:pr-5">
                     <p className="text-xs font-semibold tracking-[0.24em] text-accent">
                       {String(index + 1).padStart(2, "0")}
                     </p>
@@ -99,21 +111,21 @@ export default async function AboutPage() {
           <div className="mt-16 grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-                Values
+                {t("about", "valuesEyebrow", lang)}
               </p>
               <h2 className="mt-4 text-4xl font-semibold leading-tight text-dark">
-                Principles That Guide the Work
+                {t("about", "valuesTitle", lang)}
               </h2>
             </div>
             <div className="grid border-y border-dark/12 sm:grid-cols-2">
               {values.map((value, index) => (
-                <Reveal key={value}>
-                  <div className="border-dark/12 py-6 sm:border-r sm:px-6 sm:even:border-r-0">
+                <Reveal key={index}>
+                  <div className="border-dark/12 py-6 sm:border-r sm:px-6 sm:even:border-r-0 border-dark/12 rtl:sm:border-r-0 rtl:sm:border-l rtl:sm:even:border-l-0">
                     <p className="text-xs font-semibold tracking-[0.26em] text-accent">
                       {String(index + 1).padStart(2, "0")}
                     </p>
                     <h3 className="mt-3 text-2xl font-semibold text-dark">
-                      {value}
+                      {value.title}
                     </h3>
                   </div>
                 </Reveal>
@@ -125,9 +137,9 @@ export default async function AboutPage() {
           {settings?.socialLinks && (
             <div className="mt-20 border-t border-dark/12 pt-10 flex flex-col items-center justify-between gap-6 sm:flex-row">
               <div>
-                <h3 className="text-lg font-semibold text-dark">Connect With Us</h3>
+                <h3 className="text-lg font-semibold text-dark">{t("about", "connectTitle", lang)}</h3>
                 <p className="text-sm text-muted mt-1">
-                  Follow our official channels for the latest project updates and company announcements.
+                  {t("about", "connectDesc", lang)}
                 </p>
               </div>
               <SocialLinks socialLinks={settings.socialLinks} variant="pill" />

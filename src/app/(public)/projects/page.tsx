@@ -2,9 +2,12 @@ import { Reveal } from "@/components/animations/Reveal";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { Container } from "@/components/ui/Container";
 import { getProjects } from "@/lib/data/projects";
+import { getLanguage } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 
 export default async function ProjectsPage() {
   const dbProjects = await getProjects();
+  const lang = await getLanguage();
 
   return (
     <>
@@ -12,13 +15,13 @@ export default async function ProjectsPage() {
         <Container>
           <Reveal>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-              Projects
+              {t("projects", "projectEyebrow", lang)}
             </p>
             <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-tight text-dark sm:text-7xl">
-              Our Projects
+              {t("projects", "projectsTitle", lang)}
             </h1>
             <p className="mt-7 max-w-3xl text-xl leading-9 text-muted">
-              Explore our contracting and structural design showcases across the Kingdom.
+              {t("projects", "projectsDesc", lang)}
             </p>
           </Reveal>
         </Container>
@@ -33,6 +36,7 @@ export default async function ProjectsPage() {
                   project={project}
                   image={project.coverImage?.url}
                   index={index}
+                  lang={lang}
                 />
               </Reveal>
             ))}

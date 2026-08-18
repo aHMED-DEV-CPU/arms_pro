@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { TranslationLang } from "@/lib/i18n";
 
 type PartnerLogo = {
   name: string;
@@ -11,9 +12,10 @@ type PartnerLogo = {
 
 type PartnersSliderProps = {
   logos: PartnerLogo[];
+  lang?: TranslationLang;
 };
 
-export function PartnersSlider({ logos }: PartnersSliderProps) {
+export function PartnersSlider({ logos, lang = "en" }: PartnersSliderProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isTouchDevice, setIsTouchDevice] = useState(() => {
     if (typeof window !== "undefined") {
@@ -113,6 +115,7 @@ export function PartnersSlider({ logos }: PartnersSliderProps) {
     <div
       ref={viewportRef}
       className="overflow-hidden border-y border-dark/10 bg-background py-8"
+      dir="ltr"
     >
       <div
         ref={trackRef}
@@ -129,7 +132,7 @@ export function PartnersSlider({ logos }: PartnersSliderProps) {
                 href: logo.websiteUrl,
                 target: "_blank",
                 rel: "noopener noreferrer",
-                "aria-label": `Visit ${logo.name} website`,
+                "aria-label": lang === "ar" ? `زيارة موقع ${logo.name}` : `Visit ${logo.name} website`,
               }
             : {
                 "aria-hidden": index >= N,

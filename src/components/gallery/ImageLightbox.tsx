@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
+import { t, TranslationLang } from "@/lib/i18n";
 
 type PublicMediaFile = {
   name: string;
@@ -13,6 +14,7 @@ type ImageLightboxProps = {
   initialIndex: number;
   isOpen: boolean;
   onClose: () => void;
+  lang?: TranslationLang;
 };
 
 export function ImageLightbox({
@@ -20,6 +22,7 @@ export function ImageLightbox({
   initialIndex,
   isOpen,
   onClose,
+  lang = "en",
 }: ImageLightboxProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
@@ -108,19 +111,19 @@ export function ImageLightbox({
       <button
         type="button"
         className="absolute right-4 top-4 z-10 rounded-md border border-white/20 bg-black/35 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white hover:text-dark"
-        aria-label="Close image gallery"
+        aria-label={t("lightbox", "closeAria", lang)}
         onClick={onClose}
       >
-        Close x
+        {t("lightbox", "closeButton", lang)}
       </button>
 
       <button
         type="button"
         className="absolute left-3 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-2xl font-semibold text-white backdrop-blur transition hover:bg-white hover:text-dark"
-        aria-label="Previous image"
+        aria-label={t("lightbox", "prevAria", lang)}
         onClick={showPrevious}
       >
-        &larr;
+        {lang === "ar" ? "\u2192" : "\u2190"}
       </button>
 
       <div
@@ -141,13 +144,13 @@ export function ImageLightbox({
       <button
         type="button"
         className="absolute right-3 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-2xl font-semibold text-white backdrop-blur transition hover:bg-white hover:text-dark"
-        aria-label="Next image"
+        aria-label={t("lightbox", "nextAria", lang)}
         onClick={showNext}
       >
-        &rarr;
+        {lang === "ar" ? "\u2190" : "\u2192"}
       </button>
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-md bg-black/45 px-4 py-2 text-sm font-semibold text-white/85">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-md bg-black/45 px-4 py-2 text-sm font-semibold text-white/85" dir="ltr">
         {currentIndex + 1} / {images.length}
       </div>
     </div>

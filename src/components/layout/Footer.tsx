@@ -2,81 +2,96 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { getCompanySettings } from "@/lib/data/company";
 import { SocialLinks } from "./SocialLinks";
+import { t, getLocalizedValue, TranslationLang } from "@/lib/i18n";
 
 const quickLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/services", label: "Services" },
-  { href: "/projects", label: "Projects" },
-  { href: "/contact", label: "Contact" },
+  { href: "/", labelKey: "home" as const },
+  { href: "/about", labelKey: "about" as const },
+  { href: "/services", labelKey: "services" as const },
+  { href: "/projects", labelKey: "projects" as const },
+  { href: "/contact", labelKey: "getInTouch" as const },
 ];
 
-export async function Footer() {
+interface FooterProps {
+  lang?: TranslationLang;
+}
+
+export async function Footer({ lang = "en" }: FooterProps) {
   const settings = await getCompanySettings();
 
-  const companyName = settings?.companyName?.en || "ARMS PRO";
+  const companyName = getLocalizedValue(settings?.companyName, lang) || "ARMS PRO";
   const phone = settings?.phone || "0551119136";
   const cr = settings?.commercialRegistration || "1111103343";
   const uen = settings?.unifiedEstablishmentNumber || "7039472662";
   const vat = settings?.vatNumber || "312627669500003";
-  const address = settings?.address?.en || "Al Muzahimiyah – OMDB 4216 – Al Hada – 19651";
+  const address = getLocalizedValue(settings?.address, lang) || "Al Muzahimiyah – OMDB 4216 – Al Hada – 19651";
 
   return (
-    <footer className="bg-dark py-12 text-sm text-white/62 sm:py-14">
+    <footer className="bg-dark py-12 text-sm text-white/60 sm:py-14">
       <Container>
-        <div className="border-b border-white/12 pb-7">
-          <p className="text-3xl font-semibold tracking-[0.08em] text-white sm:text-4xl">
+        {/* TOP AREA: Brand/company identity */}
+        <div className="border-b border-white/12 pb-8">
+          <p className="text-3xl font-semibold tracking-wider text-white sm:text-4xl">
             {companyName}
           </p>
-          <p className="mt-4 max-w-2xl leading-7 text-white/70">
-            Integrated construction, design and architectural solutions.
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/70">
+            {lang === "ar"
+              ? "مجموعة سعودية للمقاولات، العمارة، التصميم الداخلي، والحلول الإنشائية المتخصصة."
+              : "A Saudi group for contracting, architecture, interiors and specialized construction solutions."}
           </p>
           <div className="mt-6">
             <SocialLinks socialLinks={settings?.socialLinks} />
           </div>
         </div>
 
-        <div className="grid gap-8 py-8 md:grid-cols-[1.05fr_0.8fr_0.9fr_1.35fr]">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-soft-accent">
-              {companyName}
-            </p>
-            <p className="mt-4 max-w-sm leading-7 text-white/60">
-              A Saudi group for contracting, architecture, interiors and
-              specialized construction solutions.
-            </p>
-          </div>
-
-          <div>
-            <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-white">
-              Quick Links
+        {/* MIDDLE AREA: 3 main columns */}
+        <div className="grid gap-10 py-10 sm:grid-cols-2 lg:grid-cols-3 border-b border-white/12">
+          {/* Column 1: Quick Links */}
+          <div className="space-y-4">
+            <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-white">
+              {t("footer", "quickLinks", lang)}
             </h2>
-            <nav className="mt-4 flex flex-col gap-3">
+            <nav className="flex flex-col gap-2.5 text-xs text-white/55">
               {quickLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="transition hover:text-white"
+                  className="transition hover:text-white focus:outline-none focus:text-white w-max"
                 >
-                  {link.label}
+                  {t("nav", link.labelKey, lang)}
                 </Link>
               ))}
             </nav>
           </div>
 
-          <div>
-            <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-white">
-              Contact
+          {/* Column 2: Contact Info */}
+          <div className="space-y-4">
+            <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-white">
+              {t("footer", "contact", lang)}
             </h2>
-            <div className="mt-4 space-y-4">
-              <p className="font-medium text-white/82">{phone}</p>
-              
+            <div className="space-y-4 text-xs">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-accent">
+                  {t("footer", "phone", lang)}
+                </p>
+                <a
+                  href={`tel:${phone.replace(/\s+/g, "")}`}
+                  className="transition hover:text-white block mt-1 text-sm font-semibold text-white/70 focus:outline-none focus:text-white text-left rtl:text-right"
+                  dir="ltr"
+                >
+                  {phone}
+                </a>
+              </div>
+
               {settings?.founderEmail && (
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-accent">Founder</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-accent">
+                    {t("footer", "founder", lang)}
+                  </p>
                   <a
                     href={`mailto:${settings.founderEmail}`}
-                    className="transition hover:text-white block mt-0.5 text-xs text-white/60 focus:outline-none focus:text-white"
+                    className="transition hover:text-white block mt-1 text-sm font-semibold text-white/70 focus:outline-none focus:text-white text-left rtl:text-right"
+                    dir="ltr"
                   >
                     {settings.founderEmail}
                   </a>
@@ -85,10 +100,13 @@ export async function Footer() {
 
               {settings?.salesEmail && (
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-accent">Sales & Biz Dev</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-accent">
+                    {t("footer", "salesAndBiz", lang)}
+                  </p>
                   <a
                     href={`mailto:${settings.salesEmail}`}
-                    className="transition hover:text-white block mt-0.5 text-xs text-white/60 focus:outline-none focus:text-white"
+                    className="transition hover:text-white block mt-1 text-sm font-semibold text-white/70 focus:outline-none focus:text-white text-left rtl:text-right"
+                    dir="ltr"
                   >
                     {settings.salesEmail}
                   </a>
@@ -97,10 +115,13 @@ export async function Footer() {
 
               {settings?.contactEmail && (
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-accent">Contact Us</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-accent">
+                    {t("footer", "contactUs", lang)}
+                  </p>
                   <a
                     href={`mailto:${settings.contactEmail}`}
-                    className="transition hover:text-white block mt-0.5 text-xs text-white/60 focus:outline-none focus:text-white"
+                    className="transition hover:text-white block mt-1 text-sm font-semibold text-white/70 focus:outline-none focus:text-white text-left rtl:text-right"
+                    dir="ltr"
                   >
                     {settings.contactEmail}
                   </a>
@@ -109,37 +130,56 @@ export async function Footer() {
             </div>
           </div>
 
-          <div>
-            <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-white">
-              Company Information
+          {/* Column 3: Company / Legal Info */}
+          <div className="space-y-4">
+            <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-white">
+              {t("footer", "companyInfo", lang)}
             </h2>
-            <dl className="mt-4 grid gap-2 text-xs leading-6 text-white/55">
+            <div className="space-y-4 text-xs text-white/55">
               <div>
-                <dt className="font-medium text-white/82">
-                  Commercial Registration
-                </dt>
-                <dd>{cr}</dd>
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-accent">
+                  {t("footer", "cr", lang)}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-white/70 text-left rtl:text-right" dir="ltr">
+                  {cr}
+                </p>
               </div>
+
               <div>
-                <dt className="font-medium text-white/82">
-                  Unified Establishment Number
-                </dt>
-                <dd>{uen}</dd>
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-accent">
+                  {t("footer", "uen", lang)}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-white/70 text-left rtl:text-right" dir="ltr">
+                  {uen}
+                </p>
               </div>
+
               <div>
-                <dt className="font-medium text-white/82">VAT Number</dt>
-                <dd>{vat}</dd>
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-accent">
+                  {t("footer", "vat", lang)}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-white/70 text-left rtl:text-right" dir="ltr">
+                  {vat}
+                </p>
               </div>
+
               <div>
-                <dt className="font-medium text-white/82">National Address</dt>
-                <dd>{address}</dd>
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-accent">
+                  {t("footer", "address", lang)}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-white/70 leading-relaxed break-words">
+                  {address}
+                </p>
               </div>
-            </dl>
+            </div>
           </div>
         </div>
 
-        <div className="border-t border-white/12 pt-6 text-xs uppercase tracking-[0.16em] text-white/42">
-          <p>{companyName} - Public portfolio foundation</p>
+        {/* BOTTOM AREA: Copyright / legal footer line */}
+        <div className="pt-6 text-xs uppercase tracking-[0.16em] text-white/40 flex flex-row justify-between flex-wrap gap-2">
+          <p>
+            &copy; {new Date().getFullYear()} {companyName} - {t("footer", "copyright", lang)}
+          </p>
         </div>
       </Container>
     </footer>

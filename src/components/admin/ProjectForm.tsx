@@ -13,6 +13,7 @@ import { getUploadSignature, deleteCloudinaryAsset } from "@/actions/admin/media
 import { uploadFileWithProgress } from "@/lib/cloudinary/media-client";
 import { createProject, updateProject } from "@/actions/admin/projects";
 import { Media } from "@/types";
+import { motion } from "motion/react";
 
 type ProjectFormValues = z.input<typeof projectFormSchema>;
 
@@ -442,34 +443,56 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
             <button
               type="button"
               onClick={() => setActiveTab("en")}
-              className={`px-4 py-2 text-xs font-semibold tracking-wider uppercase border-b-2 transition ${
+              className={`relative px-4 py-2 text-xs font-semibold tracking-wider uppercase transition ${
                 activeTab === "en"
-                  ? "border-accent text-dark"
+                  ? "text-dark"
                   : hasEnErrors
-                  ? "border-red-500 text-red-600 hover:text-red-700 font-bold"
-                  : "border-transparent text-muted hover:text-dark"
+                  ? "text-red-600 hover:text-red-700 font-bold"
+                  : "text-muted hover:text-dark"
               }`}
             >
               English Content {hasEnErrors && <span className="text-red-600 ml-1">●</span>}
+              <span
+                className={`absolute inset-x-0 bottom-0 h-0.5 bg-accent transition-transform duration-200 ${
+                  activeTab === "en" ? "scale-x-100" : "scale-x-0"
+                }`}
+                aria-hidden="true"
+              />
             </button>
             <button
               type="button"
               onClick={() => setActiveTab("ar")}
-              className={`px-4 py-2 text-xs font-semibold tracking-wider uppercase border-b-2 transition ${
+              className={`relative px-4 py-2 text-xs font-semibold tracking-wider uppercase transition ${
                 activeTab === "ar"
-                  ? "border-accent text-dark"
+                  ? "text-dark"
                   : hasArErrors
-                  ? "border-red-500 text-red-600 hover:text-red-700 font-bold"
-                  : "border-transparent text-muted hover:text-dark"
+                  ? "text-red-600 hover:text-red-700 font-bold"
+                  : "text-muted hover:text-dark"
               }`}
             >
               المحتوى العربي {hasArErrors && <span className="text-red-600 ml-1">●</span>}
+              <span
+                className={`absolute inset-x-0 bottom-0 h-0.5 bg-accent transition-transform duration-200 ${
+                  activeTab === "ar" ? "scale-x-100" : "scale-x-0"
+                }`}
+                aria-hidden="true"
+              />
             </button>
           </div>
 
           {/* Tab content */}
-          {activeTab === "en" ? (
-            <div className="space-y-5">
+          <div className="relative">
+            <motion.div
+              initial={false}
+              animate={{
+                opacity: activeTab === "en" ? 1 : 0,
+                x: activeTab === "en" ? 0 : -10,
+                display: activeTab === "en" ? "block" : "none",
+              }}
+              transition={{ duration: 0.2 }}
+              className="space-y-5 text-left"
+              dir="ltr"
+            >
               <label className={labelClass}>
                 Project Title (English)
                 <input
@@ -521,9 +544,19 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                   <p className={errorClass}>{getFormError(errors, "fullDescription.en")?.message}</p>
                 )}
               </label>
-            </div>
-          ) : (
-            <div className="space-y-5" dir="rtl">
+            </motion.div>
+
+            <motion.div
+              initial={false}
+              animate={{
+                opacity: activeTab === "ar" ? 1 : 0,
+                x: activeTab === "ar" ? 0 : 10,
+                display: activeTab === "ar" ? "block" : "none",
+              }}
+              transition={{ duration: 0.2 }}
+              className="space-y-5 text-right"
+              dir="rtl"
+            >
               <label className={`${labelClass} text-right`}>
                 عنوان المشروع (العربية)
                 <input
@@ -563,8 +596,8 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                   {...register("fullDescription.ar")}
                 />
               </label>
-            </div>
-          )}
+            </motion.div>
+          </div>
         </div>
 
         {/* Right Column (General, slug, cover, video, gallery, actions) */}

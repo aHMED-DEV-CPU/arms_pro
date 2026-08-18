@@ -16,7 +16,7 @@ export default async function AdminProtectedLayout({
   }
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row bg-[#F7F6F4]">
+    <div className="flex min-h-screen flex-col md:flex-row bg-[#F7F6F4]" dir="ltr">
       <AdminSidebar adminEmail={session.user.email} />
       <div className="flex-1 overflow-x-hidden">
         {children}

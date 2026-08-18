@@ -12,7 +12,7 @@ export default function LoginPage() {
   const [state, formAction, isPending] = useActionState(loginAdmin, null);
 
   return (
-    <main className="flex min-h-screen items-center py-20 bg-secondary">
+    <main className="flex min-h-screen items-center py-20 bg-secondary" dir="ltr">
       <Container className="max-w-md">
         <div className="rounded-xl border border-dark/12 bg-white/45 p-6 sm:p-8 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">

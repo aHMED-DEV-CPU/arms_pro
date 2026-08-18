@@ -2,24 +2,31 @@
 
 import { useState } from "react";
 import type { IService } from "@/types";
+import { t, getLocalizedValue, TranslationLang } from "@/lib/i18n";
 
 type ServiceOverviewProps = {
   service: IService;
+  lang?: TranslationLang;
 };
 
-export function ServiceOverview({ service }: ServiceOverviewProps) {
+export function ServiceOverview({ service, lang = "en" }: ServiceOverviewProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const overview = service.overview.en;
+  
+  const overview = getLocalizedValue(service.overview, lang);
+  const details = service.details || [];
+  const capabilities = service.capabilities || [];
+  const benefits = service.benefits || [];
+
   const hasDetails =
-    Boolean(service.details?.length) ||
-    Boolean(service.capabilities?.length) ||
-    Boolean(service.benefits?.length);
+    Boolean(details.length) ||
+    Boolean(capabilities.length) ||
+    Boolean(benefits.length);
 
   return (
     <div className="grid gap-10 lg:grid-cols-[0.75fr_1.25fr]">
       <div>
         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-          Overview
+          {t("services", "overviewTitle", lang)}
         </p>
       </div>
 
@@ -30,11 +37,13 @@ export function ServiceOverview({ service }: ServiceOverviewProps) {
           <>
             <button
               type="button"
-              className="mt-8 border-b border-accent pb-2 text-left text-sm font-semibold uppercase tracking-[0.16em] text-accent transition-colors duration-200 hover:text-dark"
+              className="mt-8 border-b border-accent pb-2 text-start text-sm font-semibold uppercase tracking-[0.16em] text-accent transition-colors duration-200 hover:text-dark focus:outline-none focus:text-dark"
               aria-expanded={isExpanded}
               onClick={() => setIsExpanded((expanded) => !expanded)}
             >
-              {isExpanded ? "Show Less" : "More About This Service"}
+              {isExpanded 
+                ? (lang === "ar" ? "عرض أقل" : "Show Less") 
+                : (lang === "ar" ? "المزيد عن هذه الخدمة" : "More About This Service")}
             </button>
 
             <div
@@ -46,50 +55,54 @@ export function ServiceOverview({ service }: ServiceOverviewProps) {
             >
               <div className="overflow-hidden">
                 <div className="space-y-10 border-t border-dark/12 pt-8">
-                  {service.details?.length ? (
+                  {details.length ? (
                     <div className="max-w-3xl space-y-5 text-lg leading-8 text-muted">
-                      {service.details.map((paragraph) => (
-                        <p key={paragraph.en}>{paragraph.en}</p>
+                      {details.map((paragraph, idx) => (
+                        <p key={idx}>{getLocalizedValue(paragraph, lang)}</p>
                       ))}
                     </div>
                   ) : null}
 
-                  {service.capabilities?.length || service.benefits?.length ? (
+                  {capabilities.length || benefits.length ? (
                     <div className="grid gap-10 lg:grid-cols-2">
-                      {service.capabilities?.length ? (
+                      {capabilities.length ? (
                         <div>
                           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-                            {service.capabilitiesTitle?.en ?? "What We Provide"}
+                            {getLocalizedValue(service.capabilitiesTitle, lang) || (lang === "ar" ? "ما نقدمه" : "What We Provide")}
                           </p>
                           <ul className="mt-5 grid gap-3 border-y border-dark/12 py-5">
-                            {service.capabilities.map((item) => (
+                            {capabilities.map((item, idx) => (
                               <li
-                                key={item.en}
+                                key={idx}
                                 className="border-b border-dark/10 pb-3 text-sm font-medium leading-6 text-dark last:border-b-0 last:pb-0"
                               >
-                                {item.en}
+                                {getLocalizedValue(item, lang)}
                               </li>
                             ))}
                           </ul>
                         </div>
                       ) : null}
 
-                      {service.benefits?.length ? (
+                      {benefits.length ? (
                         <div>
                           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-                            {service.benefitsTitle?.en ?? "Key Advantages"}
+                            {getLocalizedValue(service.benefitsTitle, lang) || (lang === "ar" ? "المزايا الرئيسية" : "Key Advantages")}
                           </p>
                           <div className="mt-5 space-y-5 border-y border-dark/12 py-5">
-                            {service.benefits.map((benefit) => (
-                              <div key={benefit.title.en}>
-                                <h3 className="text-lg font-semibold text-dark">
-                                  {benefit.title.en}
-                                </h3>
-                                <p className="mt-2 text-sm leading-6 text-muted">
-                                  {benefit.text.en}
-                                </p>
-                              </div>
-                            ))}
+                            {benefits.map((benefit, idx) => {
+                              const bTitle = getLocalizedValue(benefit.title, lang);
+                              const bText = getLocalizedValue(benefit.text, lang);
+                              return (
+                                <div key={idx}>
+                                  <h3 className="text-lg font-semibold text-dark">
+                                    {bTitle}
+                                  </h3>
+                                  <p className="mt-2 text-sm leading-6 text-muted">
+                                    {bText}
+                                  </p>
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
                       ) : null}

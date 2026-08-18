@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useTransition, useRef, useEffect } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "motion/react";
 import { z } from "zod";
 import {
   companySettingsValidationSchema,
@@ -242,9 +243,34 @@ export function CompanySettingsForm({ initialSettings }: CompanySettingsFormProp
     });
   };
 
+  const onInvalid = (errs: FieldErrors<CompanySettingsFormValues>) => {
+    const getFirstErrorPath = (obj: Record<string, unknown>, parentKey = ""): string => {
+      for (const key in obj) {
+        const path = parentKey ? `${parentKey}.${key}` : key;
+        const val = obj[key];
+        if (val && typeof val === "object" && !("message" in val)) {
+          const childPath = getFirstErrorPath(val as Record<string, unknown>, path);
+          if (childPath) return childPath;
+        } else if (val && typeof val === "object" && "message" in val) {
+          return path;
+        }
+      }
+      return "";
+    };
+
+    const firstErrorPath = getFirstErrorPath(errs as unknown as Record<string, Record<string, unknown>>);
+    if (firstErrorPath) {
+      if (firstErrorPath.includes(".ar")) {
+        setActiveTab("ar");
+      } else if (firstErrorPath.includes(".en")) {
+        setActiveTab("en");
+      }
+    }
+  };
+
   return (
     // eslint-disable-next-line react-hooks/refs
-    <form onSubmit={handleSubmit(onSubmit)} className="mt-10 space-y-8">
+    <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="mt-10 space-y-8">
       {/* Toast Alert */}
       {toast && (
         <div
@@ -266,30 +292,52 @@ export function CompanySettingsForm({ initialSettings }: CompanySettingsFormProp
             <button
               type="button"
               onClick={() => setActiveTab("en")}
-              className={`px-4 py-2 text-xs font-semibold tracking-wider uppercase border-b-2 transition ${
+              className={`relative px-4 py-2 text-xs font-semibold tracking-wider uppercase transition ${
                 activeTab === "en"
-                  ? "border-accent text-dark"
-                  : "border-transparent text-muted hover:text-dark"
+                  ? "text-dark"
+                  : "text-muted hover:text-dark"
               }`}
             >
               English Content
+              <span
+                className={`absolute inset-x-0 bottom-0 h-0.5 bg-accent transition-transform duration-200 ${
+                  activeTab === "en" ? "scale-x-100" : "scale-x-0"
+                }`}
+                aria-hidden="true"
+              />
             </button>
             <button
               type="button"
               onClick={() => setActiveTab("ar")}
-              className={`px-4 py-2 text-xs font-semibold tracking-wider uppercase border-b-2 transition ${
+              className={`relative px-4 py-2 text-xs font-semibold tracking-wider uppercase transition ${
                 activeTab === "ar"
-                  ? "border-accent text-dark"
-                  : "border-transparent text-muted hover:text-dark"
+                  ? "text-dark"
+                  : "text-muted hover:text-dark"
               }`}
             >
               المحتوى العربي
+              <span
+                className={`absolute inset-x-0 bottom-0 h-0.5 bg-accent transition-transform duration-200 ${
+                  activeTab === "ar" ? "scale-x-100" : "scale-x-0"
+                }`}
+                aria-hidden="true"
+              />
             </button>
           </div>
 
           {/* Localized Content fields */}
-          {activeTab === "en" ? (
-            <div className="space-y-5">
+          <div className="relative">
+            <motion.div
+              initial={false}
+              animate={{
+                opacity: activeTab === "en" ? 1 : 0,
+                x: activeTab === "en" ? 0 : -10,
+                display: activeTab === "en" ? "block" : "none",
+              }}
+              transition={{ duration: 0.2 }}
+              className="space-y-5 text-left"
+              dir="ltr"
+            >
               <label className={labelClass}>
                 Company Name (English)
                 <input
@@ -387,9 +435,19 @@ export function CompanySettingsForm({ initialSettings }: CompanySettingsFormProp
                   ))}
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className="space-y-5" dir="rtl">
+            </motion.div>
+
+            <motion.div
+              initial={false}
+              animate={{
+                opacity: activeTab === "ar" ? 1 : 0,
+                x: activeTab === "ar" ? 0 : 10,
+                display: activeTab === "ar" ? "block" : "none",
+              }}
+              transition={{ duration: 0.2 }}
+              className="space-y-5 text-right"
+              dir="rtl"
+            >
               <label className={`${labelClass} text-right`}>
                 اسم الشركة (العربية)
                 <input
@@ -432,8 +490,8 @@ export function CompanySettingsForm({ initialSettings }: CompanySettingsFormProp
                   ))}
                 </div>
               </div>
-            </div>
-          )}
+            </motion.div>
+          </div>
 
           {/* Shared Office Info */}
           <div className="border-t border-dark/10 pt-6">

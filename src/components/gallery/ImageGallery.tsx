@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { ImageLightbox } from "@/components/gallery/ImageLightbox";
+import { t, TranslationLang } from "@/lib/i18n";
 
 type PublicMediaFile = {
   name: string;
@@ -12,9 +13,10 @@ type PublicMediaFile = {
 type ImageGalleryProps = {
   images: PublicMediaFile[];
   title: string;
+  lang?: TranslationLang;
 };
 
-export function ImageGallery({ images, title }: ImageGalleryProps) {
+export function ImageGallery({ images, title, lang = "en" }: ImageGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
@@ -57,7 +59,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
                 onOpen={openLightbox}
                 overlayText={
                   isLastVisible && remainingCount > 0
-                    ? `+ ${remainingCount} More`
+                    ? `+ ${remainingCount} ${t("lightbox", "moreText", lang)}`
                     : undefined
                 }
                 sizes="(min-width: 1024px) 33vw, 100vw"
@@ -70,7 +72,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
       <div className="lg:hidden">
         <button
           type="button"
-          className="group relative aspect-[4/3] w-full cursor-pointer overflow-hidden rounded-2xl bg-secondary text-left"
+          className="group relative aspect-[4/3] w-full cursor-pointer overflow-hidden rounded-2xl bg-secondary text-start"
           aria-label={`Open selected ${title} image in gallery`}
           onClick={() => openLightbox(selectedIndex)}
         >
@@ -82,7 +84,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
             className="object-cover transition duration-500 group-hover:scale-[1.03]"
           />
           <span className="absolute bottom-3 right-3 rounded-lg bg-black/65 px-3 py-2 text-sm font-semibold text-white backdrop-blur">
-            View Gallery
+            {t("lightbox", "viewGallery", lang)}
           </span>
           <span className="absolute bottom-3 left-3 rounded-lg bg-black/45 px-3 py-2 text-xs font-semibold text-white/90">
             {selectedIndex + 1} / {images.length}
@@ -112,7 +114,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
                 />
                 {index === images.length - 1 && images.length > 5 ? (
                   <span className="absolute inset-0 flex items-center justify-center bg-black/45 text-sm font-semibold text-white">
-                    + {images.length - 5} More
+                    + {images.length - 5} {t("lightbox", "moreText", lang)}
                   </span>
                 ) : null}
               </button>
@@ -127,6 +129,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
         initialIndex={selectedIndex}
         isOpen={isLightboxOpen}
         onClose={() => setIsLightboxOpen(false)}
+        lang={lang}
       />
     </>
   );
@@ -154,7 +157,7 @@ function GalleryButton({
   return (
     <button
       type="button"
-      className={`group relative cursor-pointer overflow-hidden rounded-2xl bg-secondary text-left ${className}`}
+      className={`group relative cursor-pointer overflow-hidden rounded-2xl bg-secondary text-start ${className}`}
       aria-label={`Open ${title} image ${index + 1}`}
       onClick={() => onOpen(index)}
     >
