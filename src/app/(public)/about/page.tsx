@@ -1,14 +1,15 @@
 import Image from "next/image";
 import { Reveal } from "@/components/animations/Reveal";
 import { Container } from "@/components/ui/Container";
-
 import { getCompanySettings } from "@/lib/data/company";
+import { SocialLinks } from "@/components/layout/SocialLinks";
 
 const values = ["Excellence", "Innovation", "Integrity", "Quality"];
 
 export default async function AboutPage() {
   const settings = await getCompanySettings();
-
+  const companyName = settings?.companyName?.en || "ARMS PRO";
+  const aboutParagraphs = settings?.aboutParagraphs || [];
   return (
     <>
       <section className="bg-secondary py-16 sm:py-24">
@@ -16,7 +17,7 @@ export default async function AboutPage() {
           <div>
             <Reveal>
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-                About ARMS PRO
+                About {companyName}
               </p>
               <h1 className="mt-5 text-5xl font-semibold leading-tight text-dark sm:text-7xl">
                 Building More Than Structures
@@ -25,23 +26,9 @@ export default async function AboutPage() {
           </div>
           <Reveal delay={0.08}>
             <div className="space-y-6 text-lg leading-8 text-muted">
-              <p>
-                {settings?.about?.en ||
-                  `ARMS PRO brings together structural engineering, architectural
-                  design, construction, finishing, and specialized facade
-                  solutions to deliver projects through a coordinated and
-                  practical approach.`}
-              </p>
-              <p>
-                Our work is especially focused on steel and Light Gauge Steel
-                systems, Foam Stone architectural facades, and architectural
-                design for interior and exterior spaces.
-              </p>
-              <p>
-                This integrated model allows the group to support projects from
-                early concept development through execution, finishing, and final
-                detailing.
-              </p>
+              {aboutParagraphs.map((para, idx) => (
+                <p key={idx}>{para.en}</p>
+              ))}
             </div>
           </Reveal>
         </Container>
@@ -50,14 +37,20 @@ export default async function AboutPage() {
       <section className="py-16 sm:py-24">
         <Container>
           <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-secondary">
-            <Image
-              src="/images/home/hero/hero.jpeg"
-              alt="ARMS PRO Light Gauge Steel construction site"
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-            />
+            {settings?.aboutImage?.url ? (
+              <Image
+                src={settings.aboutImage.url}
+                alt={`${companyName} Light Gauge Steel construction site`}
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-secondary flex items-center justify-center">
+                <span className="text-dark/40 text-xs">No About Image Available</span>
+              </div>
+            )}
           </div>
 
           <div className="mt-12 grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
@@ -127,6 +120,19 @@ export default async function AboutPage() {
               ))}
             </div>
           </div>
+
+          {/* Social Links Block */}
+          {settings?.socialLinks && (
+            <div className="mt-20 border-t border-dark/12 pt-10 flex flex-col items-center justify-between gap-6 sm:flex-row">
+              <div>
+                <h3 className="text-lg font-semibold text-dark">Connect With Us</h3>
+                <p className="text-sm text-muted mt-1">
+                  Follow our official channels for the latest project updates and company announcements.
+                </p>
+              </div>
+              <SocialLinks socialLinks={settings.socialLinks} variant="pill" />
+            </div>
+          )}
         </Container>
       </section>
     </>

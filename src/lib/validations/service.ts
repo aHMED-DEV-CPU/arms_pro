@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { localizedStringSchema, mediaSchema } from "./shared";
 
-export const serviceValidationSchema = z.object({
+export const serviceBaseSchema = z.object({
   name: localizedStringSchema,
   slug: z
     .string()
@@ -22,12 +22,23 @@ export const serviceValidationSchema = z.object({
       })
     )
     .optional(),
-  coverImage: mediaSchema,
-  gallery: z.array(mediaSchema).default([]),
-  video: mediaSchema.optional(),
   featured: z.boolean().default(false),
   status: z.enum(["draft", "published"]).default("published"),
   displayOrder: z.number().int().min(0).default(0),
 });
 
-export type ServiceValidationValues = z.infer<typeof serviceValidationSchema>;
+export const serviceFormSchema = serviceBaseSchema.extend({
+  coverImage: mediaSchema.optional(),
+  gallery: z.array(mediaSchema).optional(),
+  video: mediaSchema.nullable().optional(),
+});
+
+export const servicePersistedSchema = serviceBaseSchema.extend({
+  coverImage: mediaSchema,
+  gallery: z.array(mediaSchema).default([]),
+  video: mediaSchema.nullable().optional(),
+});
+
+// Backward compatibility exports
+export const serviceValidationSchema = servicePersistedSchema;
+export type ServiceValidationValues = z.infer<typeof servicePersistedSchema>;

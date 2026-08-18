@@ -380,6 +380,9 @@ async function seed() {
         },
         phone: "0551119136",
         email: "INFO@SWAED.COM.SA",
+        founderEmail: "",
+        salesEmail: "",
+        contactEmail: "INFO@SWAED.COM.SA",
         address: { en: "Al Muzahimiyah – OMDB 4216 – Al Hada – 19651", ar: "" },
         commercialRegistration: "1111103343",
         unifiedEstablishmentNumber: "7039472662",
@@ -391,6 +394,7 @@ async function seed() {
           facebook: "",
           youtube: "",
           whatsapp: "",
+          tiktok: "",
         }
       });
       console.log("CompanySettings CREATED.");

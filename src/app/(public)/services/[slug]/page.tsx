@@ -17,7 +17,7 @@ export default async function ServiceDetailPage({
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
 
-  if (!service) {
+  if (!service || service.status === "draft") {
     notFound();
   }
 

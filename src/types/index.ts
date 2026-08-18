@@ -58,9 +58,13 @@ export interface IPartner {
 
 export interface ICompanySettings {
   companyName: LocalizedString;
-  about: LocalizedString;
+  about?: LocalizedString;
+  aboutParagraphs?: LocalizedString[];
   phone: string;
-  email: string;
+  email?: string;
+  founderEmail?: string;
+  salesEmail?: string;
+  contactEmail?: string;
   address: LocalizedString;
   commercialRegistration: string;
   unifiedEstablishmentNumber: string;
@@ -72,9 +76,11 @@ export interface ICompanySettings {
     facebook?: string;
     youtube?: string;
     whatsapp?: string;
+    tiktok?: string;
   };
   logo?: Media;
   heroImage?: Media;
+  aboutImage?: Media;
   createdAt?: Date;
   updatedAt?: Date;
 }

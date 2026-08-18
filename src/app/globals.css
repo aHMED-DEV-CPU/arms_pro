@@ -36,53 +36,55 @@
   --font-arabic: var(--font-ibm-plex-sans-arabic);
 }
 
-* {
-  box-sizing: border-box;
-}
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
 
-body {
-  background: var(--background);
-  color: var(--text);
-  font-family: var(--font-manrope), var(--font-ibm-plex-sans-arabic), Arial,
-    sans-serif;
-  overflow-x: hidden;
-  text-rendering: optimizeLegibility;
-}
+  body {
+    background: var(--background);
+    color: var(--text);
+    font-family: var(--font-manrope), var(--font-ibm-plex-sans-arabic), Arial,
+      sans-serif;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+  }
 
-.home h1 {
-  color: #f1eee7;
-}
+  .home h1 {
+    color: #f1eee7;
+  }
 
-h1,
-h2,
-h3,
-h4 {
-  color: var(--dark);
-  letter-spacing: -0.01em;
-}
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--dark);
+    letter-spacing: -0.01em;
+  }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 
-img,
-picture,
-video,
-canvas,
-svg {
-  display: block;
-  max-width: 100%;
-}
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
 
-::selection {
-  background: var(--soft-accent);
-  color: var(--dark);
-}
+  ::selection {
+    background: var(--soft-accent);
+    color: var(--dark);
+  }
 
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
 }
 
 @keyframes logo-slider {

@@ -18,33 +18,42 @@ export default async function Home() {
   const dbProjects = await getFeaturedProjects();
   const dbPartners = await getPartners();
   const settings = await getCompanySettings();
+  const companyName = settings?.companyName?.en || "ARMS PRO";
+  const aboutParagraphs = settings?.aboutParagraphs || [];
+  const homeParagraphs = aboutParagraphs.slice(0, 2);
 
-  const heroImage = (await getPublicImageFiles("images", "home", "hero")).at(0);
+  const heroUrl = settings?.heroImage?.url;
+  const aboutImageUrl = settings?.aboutImage?.url;
   const partnerLogos = dbPartners.map((p) => ({
     name: p.name,
     src: p.logo.url,
+    websiteUrl: p.websiteUrl,
   }));
 
   return (
     <>
       <section className="relative min-h-[82vh] overflow-hidden bg-dark home">
-        {heroImage ? (
+        {heroUrl ? (
           <Image
-            src={heroImage.src}
-            alt="ARMS PRO Light Gauge Steel construction site"
+            src={heroUrl}
+            alt={`${companyName} Light Gauge Steel construction site`}
             fill
             priority
             sizes="100vw"
             className="object-cover object-[center_42%] sm:object-center"
           />
-        ) : null}
+        ) : (
+          <div className="absolute inset-0 bg-dark/95 flex items-center justify-center">
+            <span className="text-white/60 text-sm">No Hero Cover Image Available</span>
+          </div>
+        )}
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(32,40,43,0.86)_0%,rgba(45,55,59,0.68)_42%,rgba(32,40,43,0.24)_78%,rgba(32,40,43,0.12)_100%)]" />
         <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-dark/55 to-transparent" />
         <Container className="relative flex min-h-[82vh] items-end pb-16 pt-24 sm:pb-24">
           <div className="max-w-4xl text-white">
             <Reveal>
               <p className="text-sm font-semibold uppercase tracking-[0.22em] text-soft-accent">
-                ARMS PRO GROUP
+                {companyName.toUpperCase()}
               </p>
             </Reveal>
             <Reveal delay={0.08}>
@@ -85,7 +94,7 @@ export default async function Home() {
             <Reveal>
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-                  About ARMS PRO
+                  About {companyName}
                 </p>
                 <h2 className="mt-5 max-w-xl text-5xl font-semibold leading-tight text-dark sm:text-7xl">
                   Building More Than Structures
@@ -95,18 +104,9 @@ export default async function Home() {
             <div>
               <Reveal delay={0.08}>
                 <div className="space-y-6 text-lg leading-8 text-muted">
-                  <p>
-                    {settings?.about?.en ||
-                      `ARMS PRO is a Saudi group providing integrated construction,
-                      design, finishing, structural systems, and architectural
-                      solutions for residential, commercial, hospitality, and
-                      specialized projects.`}
-                  </p>
-                  <p>
-                    By coordinating engineering, construction, facade work, and
-                    interior/exterior design, we help projects move from concept
-                    to practical execution with quality and attention to detail.
-                  </p>
+                  {homeParagraphs.map((para, idx) => (
+                    <p key={idx}>{para.en}</p>
+                  ))}
                 </div>
               </Reveal>
               <Reveal delay={0.16}>
@@ -130,15 +130,19 @@ export default async function Home() {
           <Reveal delay={0.12}>
             <div className="mt-12 grid gap-5 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
               <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-secondary">
-                {heroImage ? (
+                {aboutImageUrl ? (
                   <Image
-                    src={heroImage.src}
-                    alt="ARMS PRO Light Gauge Steel construction work"
+                    src={aboutImageUrl}
+                    alt={`${companyName} Light Gauge Steel construction work`}
                     fill
                     sizes="(min-width: 1024px) 58vw, 100vw"
                     className="object-cover"
                   />
-                ) : null}
+                ) : (
+                  <div className="absolute inset-0 bg-secondary flex items-center justify-center">
+                    <span className="text-dark/40 text-xs">No About Section Image Available</span>
+                  </div>
+                )}
               </div>
               <div className="border-l border-accent pl-6 text-sm uppercase tracking-[0.18em] text-muted">
                 <p>

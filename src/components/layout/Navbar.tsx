@@ -13,7 +13,12 @@ const navLinks = [
   { href: "/projects", label: "Projects" },
 ];
 
-export function Navbar() {
+interface NavbarProps {
+  logoUrl?: string;
+  companyName?: string;
+}
+
+export function Navbar({ logoUrl, companyName = "ARMS PRO" }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
@@ -30,18 +35,24 @@ export function Navbar() {
       <Container className="flex h-20 items-center justify-between gap-8">
         <Link
           href="/"
-          className="relative h-14 w-40 shrink-0 overflow-hidden sm:h-16 sm:w-48"
-          aria-label="ARMS PRO home"
+          className="relative h-14 w-40 shrink-0 flex items-center overflow-hidden sm:h-16 sm:w-48"
+          aria-label={`${companyName} home`}
           onClick={() => setIsOpen(false)}
         >
-          <Image
-            src="/images/branding/logo/logo.png"
-            alt="ARMS PRO logo"
-            fill
-            priority
-            sizes="(min-width: 640px) 192px, 160px"
-            className="object-contain"
-          />
+          {logoUrl ? (
+            <Image
+              src={logoUrl}
+              alt={`${companyName} logo`}
+              fill
+              priority
+              sizes="(min-width: 640px) 192px, 160px"
+              className="object-contain"
+            />
+          ) : (
+            <span className="text-lg font-semibold tracking-wider text-white">
+              {companyName}
+            </span>
+          )}
         </Link>
 
         <nav className="hidden items-center gap-9 text-sm font-medium text-white/76 md:flex">
