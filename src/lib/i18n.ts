@@ -307,3 +307,12 @@ export function getLocalizedValue(
   }
   return field.en ? field.en.trim() : "";
 }
+
+export function localizedPath(lang: TranslationLang, path: string): string {
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  if (cleanPath.startsWith("/admin") || cleanPath.startsWith("/api")) {
+    return cleanPath;
+  }
+  return `/${lang}${cleanPath === "/" ? "" : cleanPath}`;
+}
+

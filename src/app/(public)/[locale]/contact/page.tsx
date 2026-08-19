@@ -5,7 +5,22 @@ import { SocialLinks } from "@/components/layout/SocialLinks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { getLanguage } from "@/lib/i18n-server";
+import type { Metadata } from "next";
+import { defaultSeoMetadata, getLocalizedAlternates } from "@/lib/seo";
 import { t, getLocalizedValue } from "@/lib/i18n";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: defaultSeoMetadata.contact.title,
+    description: defaultSeoMetadata.contact.description,
+    alternates: getLocalizedAlternates(locale, "/contact"),
+  };
+}
 
 function normalizeWhatsAppNumber(phone: string): string {
   let normalized = phone.trim();
@@ -23,9 +38,14 @@ function normalizeWhatsAppNumber(phone: string): string {
   return normalized;
 }
 
-export default async function ContactPage() {
+export default async function ContactPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const lang = (locale === "ar" ? "ar" : "en");
   const settings = await getCompanySettings();
-  const lang = await getLanguage();
 
   const companyName = getLocalizedValue(settings?.companyName, lang) || "ARMS PRO";
   const phone = settings?.phone || "0551119136";

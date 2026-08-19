@@ -2,12 +2,31 @@ import { Reveal } from "@/components/animations/Reveal";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { Container } from "@/components/ui/Container";
 import { getProjects } from "@/lib/data/projects";
-import { getLanguage } from "@/lib/i18n-server";
+import type { Metadata } from "next";
+import { defaultSeoMetadata, getLocalizedAlternates } from "@/lib/seo";
 import { t } from "@/lib/i18n";
 
-export default async function ProjectsPage() {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: defaultSeoMetadata.projects.title,
+    description: defaultSeoMetadata.projects.description,
+    alternates: getLocalizedAlternates(locale, "/projects"),
+  };
+}
+
+export default async function ProjectsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const lang = (locale === "ar" ? "ar" : "en");
   const dbProjects = await getProjects();
-  const lang = await getLanguage();
 
   return (
     <>

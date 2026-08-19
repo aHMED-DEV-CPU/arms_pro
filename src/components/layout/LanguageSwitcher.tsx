@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { setLanguageAction } from "@/actions/i18n";
 import { TranslationLang } from "@/lib/i18n";
 
@@ -11,6 +11,8 @@ interface LanguageSwitcherProps {
 
 export function LanguageSwitcher({ currentLang }: LanguageSwitcherProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
   function handleLanguageSwitch(lang: TranslationLang) {
@@ -19,7 +21,21 @@ export function LanguageSwitcher({ currentLang }: LanguageSwitcherProps) {
     startTransition(async () => {
       try {
         await setLanguageAction(lang);
-        router.refresh();
+        
+        const segments = pathname.split("/");
+        if (segments[1] === "en" || segments[1] === "ar") {
+          segments[1] = lang;
+        } else {
+          segments.splice(1, 0, lang);
+        }
+        
+        let targetUrl = segments.join("/");
+        const queryString = searchParams.toString();
+        if (queryString) {
+          targetUrl += `?${queryString}`;
+        }
+        
+        router.push(targetUrl);
       } catch (err) {
         console.error("Failed to switch language:", err);
       }

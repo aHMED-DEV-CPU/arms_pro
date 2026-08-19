@@ -1,3 +1,4 @@
+import { cache } from "react";
 import dbConnect from "@/lib/db/mongoose";
 import Project from "@/models/Project";
 import { IProject } from "@/types";
@@ -19,8 +20,8 @@ export async function getFeaturedProjects(): Promise<IProject[]> {
   return serializeDoc<IProject[]>(projects);
 }
 
-export async function getProjectBySlug(slug: string): Promise<IProject | null> {
+export const getProjectBySlug = cache(async function getProjectBySlug(slug: string): Promise<IProject | null> {
   await dbConnect();
   const project = await Project.findOne({ slug }).lean();
   return serializeDoc<IProject | null>(project);
-}
+});
