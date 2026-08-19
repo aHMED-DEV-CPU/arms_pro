@@ -1,3 +1,4 @@
+import { cache } from "react";
 import dbConnect from "@/lib/db/mongoose";
 import Service from "@/models/Service";
 import { IService } from "@/types";
@@ -19,9 +20,9 @@ export async function getFeaturedServices(): Promise<IService[]> {
   return serializeDoc<IService[]>(services);
 }
 
-export async function getServiceBySlug(slug: string): Promise<IService | null> {
+export const getServiceBySlug = cache(async function getServiceBySlug(slug: string): Promise<IService | null> {
   await dbConnect();
   const service = await Service.findOne({ slug, status: "published" })
     .lean();
   return serializeDoc<IService | null>(service);
-}
+});

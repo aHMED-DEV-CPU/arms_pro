@@ -9,15 +9,62 @@ import { getFeaturedServices } from "@/lib/data/services";
 import { getFeaturedProjects } from "@/lib/data/projects";
 import { getPartners } from "@/lib/data/partners";
 import { getCompanySettings } from "@/lib/data/company";
-import { getLanguage } from "@/lib/i18n-server";
-import { t, getLocalizedValue } from "@/lib/i18n";
+import type { Metadata } from "next";
+import { defaultSeoMetadata, safeJsonLd, getSiteUrl, getLocalizedAlternates } from "@/lib/seo";
+import { t, getLocalizedValue, localizedPath } from "@/lib/i18n";
 
-export default async function Home() {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: defaultSeoMetadata.home.title,
+    description: defaultSeoMetadata.home.description,
+    alternates: getLocalizedAlternates(locale, "/"),
+  };
+}
+
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const lang = (locale === "ar" ? "ar" : "en");
   const dbServices = await getFeaturedServices();
   const dbProjects = await getFeaturedProjects();
   const dbPartners = await getPartners();
   const settings = await getCompanySettings();
-  const lang = await getLanguage();
+  const siteUrl = getSiteUrl();
+
+  const socialLinksObj = settings?.socialLinks || {};
+  const sameAs: string[] = Object.values(socialLinksObj).filter(
+    (val): val is string => typeof val === "string" && val.trim() !== ""
+  );
+
+  const orgSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": settings?.companyName?.en || "ARMS PRO",
+    "url": siteUrl,
+    "logo": settings?.logo?.url || "",
+    "telephone": settings?.phone || "",
+    "email": settings?.contactEmail || "",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": settings?.address?.en || "",
+    },
+    "sameAs": sameAs,
+  };
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": settings?.companyName?.en || "ARMS PRO",
+    "url": siteUrl,
+  };
 
   const companyName = getLocalizedValue(settings?.companyName, lang) || "ARMS PRO";
   const aboutParagraphs = settings?.aboutParagraphs || [];
@@ -78,13 +125,13 @@ export default async function Home() {
             <Reveal delay={0.24}>
               <div className="mt-9 flex flex-col gap-4 sm:flex-row">
                 <Link
-                  href="/projects"
+                  href={localizedPath(lang, "/projects")}
                   className="inline-flex justify-center rounded-xl border border-accent bg-accent px-6 py-3 text-sm font-semibold text-dark transition hover:bg-soft-accent"
                 >
                   {t("home", "heroExplore", lang)}
                 </Link>
                 <Link
-                  href="/services"
+                  href={localizedPath(lang, "/services")}
                   className="inline-flex justify-center rounded-xl border border-white/55 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white hover:!text-dark"
                 >
                   {t("home", "heroServices", lang)}
@@ -176,7 +223,7 @@ export default async function Home() {
               </p>
             </div>
             <Link
-              href="/services"
+              href={localizedPath(lang, "/services")}
               className="text-sm font-semibold text-accent transition hover:text-dark shrink-0"
             >
               {t("home", "viewAllServices", lang)}
@@ -213,7 +260,7 @@ export default async function Home() {
               </p>
             </div>
             <Link
-              href="/projects"
+              href={localizedPath(lang, "/projects")}
               className="text-sm font-semibold text-accent transition hover:text-dark shrink-0"
             >
               {t("home", "viewAllProjects", lang)}
@@ -253,6 +300,14 @@ export default async function Home() {
         </Container>
         <PartnersSlider logos={partnerLogos} lang={lang} />
       </section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(orgSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(websiteSchema) }}
+      />
     </>
   );
 }

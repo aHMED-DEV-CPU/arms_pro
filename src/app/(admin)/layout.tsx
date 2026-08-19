@@ -1,6 +1,7 @@
+import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import { IBM_Plex_Sans_Arabic, Manrope } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -16,18 +17,21 @@ const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
 });
 
 export const metadata: Metadata = {
-  title: "ARMS PRO",
-  description:
-    "Saudi construction, architecture, interior finishing, and contracting company.",
+  title: "Admin Panel | ARMS PRO",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function AdminRootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
+      dir="ltr"
       className={`${manrope.variable} ${ibmPlexSansArabic.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>
   );
 }

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { getCompanySettings } from "@/lib/data/company";
 import { SocialLinks } from "./SocialLinks";
-import { t, getLocalizedValue, TranslationLang } from "@/lib/i18n";
+import { t, getLocalizedValue, TranslationLang, localizedPath } from "@/lib/i18n";
 
 const quickLinks = [
   { href: "/", labelKey: "home" as const },
@@ -55,7 +55,7 @@ export async function Footer({ lang = "en" }: FooterProps) {
               {quickLinks.map((link) => (
                 <Link
                   key={link.href}
-                  href={link.href}
+                  href={localizedPath(lang, link.href)}
                   className="transition hover:text-white focus:outline-none focus:text-white w-max"
                 >
                   {t("nav", link.labelKey, lang)}

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { IService } from "@/types";
-import { t, getLocalizedValue, TranslationLang } from "@/lib/i18n";
+import { t, getLocalizedValue, TranslationLang, localizedPath } from "@/lib/i18n";
 
 type ServiceCardProps = {
   service: IService;
@@ -13,7 +13,7 @@ type ServiceCardProps = {
 export function ServiceCard({ service, image, index, lang = "en" }: ServiceCardProps) {
   const number =
     typeof index === "number" ? String(index + 1).padStart(2, "0") : null;
-  const href = `/services/${service.slug}`;
+  const href = localizedPath(lang, `/services/${service.slug}`);
 
   const name = getLocalizedValue(service.name, lang);
   const shortDescription = getLocalizedValue(service.shortDescription, lang);

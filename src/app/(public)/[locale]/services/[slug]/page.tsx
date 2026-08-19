@@ -7,18 +7,61 @@ import { Container } from "@/components/ui/Container";
 import { getServiceBySlug, getServices } from "@/lib/data/services";
 import { getLanguage } from "@/lib/i18n-server";
 import { t, getLocalizedValue } from "@/lib/i18n";
+import type { Metadata } from "next";
+import { getSiteUrl, safeJsonLd, getLocalizedAlternates } from "@/lib/seo";
+import { TranslationLang } from "@/lib/i18n";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const service = await getServiceBySlug(slug);
+
+  if (!service || service.status === "draft") {
+    return {};
+  }
+
+  const lang = (locale === "ar" ? "ar" : "en") as TranslationLang;
+  const siteUrl = getSiteUrl();
+  const name = getLocalizedValue(service.name, lang);
+  const shortDescription = getLocalizedValue(service.shortDescription, lang);
+  
+  const title = `${name} | ARMS PRO`;
+  const description = shortDescription || "";
+  const imageUrl = service.coverImage?.url;
+
+  return {
+    title,
+    description,
+    alternates: getLocalizedAlternates(locale, `/services/${slug}`),
+    openGraph: {
+      title,
+      description,
+      url: `${siteUrl}/${locale}/services/${slug}`,
+      images: imageUrl ? [{ url: imageUrl }] : undefined,
+      locale: locale === "ar" ? "ar_AR" : "en_US",
+    },
+  };
+}
 
 export async function generateStaticParams() {
   const dbServices = await getServices();
-  return dbServices.map((service) => ({ slug: service.slug }));
+  return dbServices.flatMap((service) => [
+    { locale: "en", slug: service.slug },
+    { locale: "ar", slug: service.slug },
+  ]);
 }
 
 export default async function ServiceDetailPage({
   params,
-}: PageProps<"/services/[slug]">) {
-  const { slug } = await params;
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const { locale, slug } = await params;
   const service = await getServiceBySlug(slug);
-  const lang = await getLanguage();
+  const lang = (locale === "ar" ? "ar" : "en");
 
   if (!service || service.status === "draft") {
     notFound();
@@ -32,8 +75,47 @@ export default async function ServiceDetailPage({
   const video = service.video;
   const coverImage = service.coverImage;
 
+  const siteUrl = getSiteUrl();
   const name = getLocalizedValue(service.name, lang);
   const shortDescription = getLocalizedValue(service.shortDescription, lang);
+
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": service.name.en,
+    "description": service.shortDescription.en || "",
+    "image": service.coverImage?.url || "",
+    "provider": {
+      "@type": "Organization",
+      "name": "ARMS PRO",
+      "url": siteUrl,
+    },
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": lang === "ar" ? "الرئيسية" : "Home",
+        "item": `${siteUrl}/${locale}`,
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": lang === "ar" ? "خدماتنا" : "Services",
+        "item": `${siteUrl}/${locale}/services`,
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": name,
+        "item": `${siteUrl}/${locale}/services/${slug}`,
+      },
+    ],
+  };
 
   return (
     <>
@@ -103,6 +185,14 @@ export default async function ServiceDetailPage({
           </Container>
         </section>
       ) : null}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(serviceSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbSchema) }}
+      />
     </>
   );
 }

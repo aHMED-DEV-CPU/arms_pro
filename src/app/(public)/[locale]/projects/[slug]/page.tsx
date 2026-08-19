@@ -6,18 +6,61 @@ import { Container } from "@/components/ui/Container";
 import { getProjectBySlug, getProjects } from "@/lib/data/projects";
 import { getLanguage } from "@/lib/i18n-server";
 import { t, getLocalizedValue } from "@/lib/i18n";
+import type { Metadata } from "next";
+import { getSiteUrl, safeJsonLd, getLocalizedAlternates } from "@/lib/seo";
+import { TranslationLang } from "@/lib/i18n";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const project = await getProjectBySlug(slug);
+
+  if (!project) {
+    return {};
+  }
+
+  const lang = (locale === "ar" ? "ar" : "en") as TranslationLang;
+  const siteUrl = getSiteUrl();
+  const name = getLocalizedValue(project.title, lang);
+  const shortDescription = getLocalizedValue(project.shortDescription, lang);
+
+  const title = `${name} | ARMS PRO`;
+  const description = shortDescription || "";
+  const imageUrl = project.coverImage?.url;
+
+  return {
+    title,
+    description,
+    alternates: getLocalizedAlternates(locale, `/projects/${slug}`),
+    openGraph: {
+      title,
+      description,
+      url: `${siteUrl}/${locale}/projects/${slug}`,
+      images: imageUrl ? [{ url: imageUrl }] : undefined,
+      locale: locale === "ar" ? "ar_AR" : "en_US",
+    },
+  };
+}
 
 export async function generateStaticParams() {
   const dbProjects = await getProjects();
-  return dbProjects.map((project) => ({ slug: project.slug }));
+  return dbProjects.flatMap((project) => [
+    { locale: "en", slug: project.slug },
+    { locale: "ar", slug: project.slug },
+  ]);
 }
 
 export default async function ProjectDetailPage({
   params,
-}: PageProps<"/projects/[slug]">) {
-  const { slug } = await params;
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const { locale, slug } = await params;
   const project = await getProjectBySlug(slug);
-  const lang = await getLanguage();
+  const lang = (locale === "ar" ? "ar" : "en");
 
   if (!project) {
     notFound();
@@ -31,7 +74,33 @@ export default async function ProjectDetailPage({
   const video = project.video;
   const coverImage = project.coverImage;
 
+  const siteUrl = getSiteUrl();
   const title = getLocalizedValue(project.title, lang);
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": lang === "ar" ? "الرئيسية" : "Home",
+        "item": `${siteUrl}/${locale}`,
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": lang === "ar" ? "مشاريعنا" : "Projects",
+        "item": `${siteUrl}/${locale}/projects`,
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": title,
+        "item": `${siteUrl}/${locale}/projects/${slug}`,
+      },
+    ],
+  };
 
   return (
     <>
@@ -88,6 +157,10 @@ export default async function ProjectDetailPage({
           <ImageGallery images={galleryImages} title={title} lang={lang} />
         </Container>
       </section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbSchema) }}
+      />
     </>
   );
 }

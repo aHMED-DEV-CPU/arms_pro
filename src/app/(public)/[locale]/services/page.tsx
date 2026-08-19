@@ -2,12 +2,31 @@ import { Reveal } from "@/components/animations/Reveal";
 import { ServiceCard } from "@/components/services/ServiceCard";
 import { Container } from "@/components/ui/Container";
 import { getServices } from "@/lib/data/services";
-import { getLanguage } from "@/lib/i18n-server";
+import type { Metadata } from "next";
+import { defaultSeoMetadata, getLocalizedAlternates } from "@/lib/seo";
 import { t } from "@/lib/i18n";
 
-export default async function ServicesPage() {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: defaultSeoMetadata.services.title,
+    description: defaultSeoMetadata.services.description,
+    alternates: getLocalizedAlternates(locale, "/services"),
+  };
+}
+
+export default async function ServicesPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const lang = (locale === "ar" ? "ar" : "en");
   const dbServices = await getServices();
-  const lang = await getLanguage();
 
   return (
     <>

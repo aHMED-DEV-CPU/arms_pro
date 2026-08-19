@@ -3,12 +3,31 @@ import { Reveal } from "@/components/animations/Reveal";
 import { Container } from "@/components/ui/Container";
 import { getCompanySettings } from "@/lib/data/company";
 import { SocialLinks } from "@/components/layout/SocialLinks";
-import { getLanguage } from "@/lib/i18n-server";
+import type { Metadata } from "next";
+import { defaultSeoMetadata, getLocalizedAlternates } from "@/lib/seo";
 import { t, getLocalizedValue } from "@/lib/i18n";
 
-export default async function AboutPage() {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: defaultSeoMetadata.about.title,
+    description: defaultSeoMetadata.about.description,
+    alternates: getLocalizedAlternates(locale, "/about"),
+  };
+}
+
+export default async function AboutPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const lang = (locale === "ar" ? "ar" : "en");
   const settings = await getCompanySettings();
-  const lang = await getLanguage();
 
   const companyName = getLocalizedValue(settings?.companyName, lang) || "ARMS PRO";
   const aboutParagraphs = settings?.aboutParagraphs || [];

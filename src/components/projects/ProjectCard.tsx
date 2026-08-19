@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { IProject } from "@/types";
-import { t, getLocalizedValue, TranslationLang } from "@/lib/i18n";
+import { t, getLocalizedValue, TranslationLang, localizedPath } from "@/lib/i18n";
 
 type ProjectCardProps = {
   project: IProject;
@@ -20,7 +20,7 @@ export function ProjectCard({
 }: ProjectCardProps) {
   const number =
     typeof index === "number" ? String(index + 1).padStart(2, "0") : null;
-  const href = `/projects/${project.slug}`;
+  const href = localizedPath(lang, `/projects/${project.slug}`);
 
   const title = getLocalizedValue(project.title, lang);
   const category = getLocalizedValue(project.category, lang);
